@@ -25,7 +25,9 @@
 #define UI_NO_DEST 		-2
 
 
-#define TRANSMISSION_SLEEP_TIME 500000 // = 500ms
+#define TRANSMISSION_USLEEP_TIME 500000 // = 500ms
+#define TRANSMISSION_TIMEOUT 3 			// seconds
+#define TRANSMISSION_MAX_ATTEMPTS 3
 
 
 /*

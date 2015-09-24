@@ -31,7 +31,7 @@ int transmissionControl() {
 	si_other.sin_family = AF_INET;
 
 	while (1) {
-		usleep(TRANSMISSION_SLEEP_TIME); // 500000 = 500ms
+		usleep(TRANSMISSION_USLEEP_TIME);
 		if (TRANSMIT_QUEUE->N == 0) continue;
 
 		for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next) {
@@ -53,11 +53,11 @@ int transmissionControl() {
 			} else if (p->attempts > 0) {
 				double elapsed = difftime(time(0), p->timestamp);
 
-				if (p->attempts >= 3 && elapsed > 3) {
+				if (p->attempts >= TRANSMISSION_MAX_ATTEMPTS && elapsed > TRANSMISSION_TIMEOUT) {
 					printf("Não foi possível enviar a mensagem #%d ao roteador %d.\n", p->data->ID, p->data->destID);
 					dequeuePacket(p);
 				} else {
-					if (elapsed > 3) {
+					if (elapsed > TRANSMISSION_TIMEOUT) {
 						printf("Tentando enviar o pacote #%d para o roteador %d pela %dª vez.\n", p->data->ID, p->data->destID, p->attempts+1);
 						sendTo(&si_other, p, s);
 
