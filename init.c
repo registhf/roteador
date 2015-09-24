@@ -13,7 +13,7 @@ short unsigned int 	LAST_SENT_DGRAM_ID;
 int main(int argc, char const *argv[]) {
 	Router R;
 	Graph G;
-	pthread_t L[2];
+	pthread_t L[3];
 	t_arg *arg = malloc(sizeof(t_arg));
 
 	if (argc > 1) {
@@ -52,11 +52,14 @@ int main(int argc, char const *argv[]) {
 
 	pthread_create(&L[0], NULL, (void *)recieveDatagram, (void *)arg);
 	pthread_create(&L[1], NULL, (void *)userInterface, (void *)arg);
+	pthread_create(&L[2], NULL, (void *)transmissionControl, (void *)arg);
 
 	pthread_join(L[1], NULL);
 
 	pthread_cancel(L[0]);
+	pthread_cancel(L[2]);
 	pthread_join(L[0], NULL);
+	pthread_join(L[2], NULL);
 
 	free(arg);
 	destroyGraph(G);

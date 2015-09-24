@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <time.h>
 
 // Limites
 #define MAX_LEN_MESSAGE 	100
@@ -22,6 +23,9 @@
 
 #define UI_CLOSE 		-1
 #define UI_NO_DEST 		-2
+
+
+#define TRANSMISSION_SLEEP_TIME 500000 // = 500ms
 
 
 /*
@@ -69,7 +73,7 @@ typedef struct graph *Graph;
 
 
 
-typedef struct message_data {
+typedef struct datagram {
 	short unsigned int ID;
 	unsigned char type;
 	unsigned char code;
@@ -81,29 +85,47 @@ typedef struct message_data {
 	int destID;
 	int srcID;
 	char *message;
-} message_data;
+} datagram;
 
-typedef struct message_data *Message;
+typedef struct datagram *Datagram;
+
 
 typedef struct packet {
 	char *IP;
 	int port;
-	Message data;
+	Datagram data;
+	time_t timestamp;
+	int attempts;
+	unsigned char delivered;
+	unsigned char forward;
+	struct packet *next;
 } packet;
 
+
 typedef struct packet *Packet;
+
 
 typedef struct t_arg {
 	Router R;
 	Graph  G;
-	Message data;
+	Datagram data;
 	int recv_len;
 } t_arg;
+
+
+typedef struct control_queue {
+	unsigned int N;
+	Packet first;
+} control_queue;
+
+typedef struct control_queue *Queue;
+
 
 extern unsigned int		  ROUTER_ID;
 extern short unsigned int LAST_SENT_DGRAM_ID;
 extern unsigned int 	  INTERFACE_DEST;
 extern size_t 			  OUT_BUFF_LEN;
+extern Queue 			  TRANSMIT_QUEUE;
 
 /*
  * Lê as configurações dos roteadores no arquivo roteador.config.
@@ -168,19 +190,27 @@ void sendDatagram(Packet p, t_arg *arg);
 
 void recieveDatagram(t_arg *arg);
 
-void printMessageData(Message data);
+void printMessageData(Datagram data);
 
-Packet findOutputRoute(Graph G, Router R, Message data);
+Packet findOutputRoute(Graph G, Router R, Datagram data);
 
-void *packDatagram(Message data);
+void *packDatagram(Datagram data);
 
-Message unpackDatagram(void *buffer);
+Datagram unpackDatagram(void *buffer);
 
 void sendConfirmation(int dest, int ID, t_arg *arg);
 
-void destroyMessage(Message data);
+void destroyDatagram(Datagram data);
 void destroyPacket(Packet R);
 
 void waitConfirmation(t_arg *arg);
 
 void sendConfirmationMessage(t_arg *arg);
+
+void queuePacket(Packet packet);
+
+int transmissionControl();
+
+void confirmDelivery(int destID, short unsigned int ID);
+
+void reinitInterface();

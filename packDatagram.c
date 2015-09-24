@@ -2,13 +2,13 @@
 #include <string.h>
 #include "header.h"
 
-static size_t calcBufferLen(Message data);
+static size_t calcBufferLen(Datagram data);
 static void serializeString(void **buffer, char *str);
 static void serializeInt(void **buffer, int value);
 static void serializeShortUnsignedInt(void **buffer, short unsigned int value);
 static void serializeUnsignedChar(void **buffer, unsigned char value);
 
-void *packDatagram(Message data) {
+void *packDatagram(Datagram data) {
 	void *buffer = NULL, *initial = NULL;
 
 	OUT_BUFF_LEN 		= calcBufferLen(data);
@@ -30,7 +30,7 @@ void *packDatagram(Message data) {
 	return initial;
 }
 
-static size_t calcBufferLen(Message data) {
+static size_t calcBufferLen(Datagram data) {
 	return 	sizeof(int)*4 + sizeof(short unsigned int)*2 + (sizeof(unsigned char)+1)*2
 	 		+ (sizeof(char)*strlen(data->message))+1 + (sizeof(char)*strlen(data->destIP))+1
 	 		+ (sizeof(char)*strlen(data->srcIP))+1;

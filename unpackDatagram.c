@@ -7,9 +7,9 @@ static int deserializeInt(void **buffer);
 static unsigned char deserializeUnsignedChar(void **buffer);
 static short unsigned int deserializeShortUnsignedInt(void **buffer);
 
-Message unpackDatagram(void *buffer) {
-	Message data = (Message)malloc(sizeof(message_data));
-	memset(data, 0, sizeof(message_data));
+Datagram unpackDatagram(void *buffer) {
+	Datagram data = (Datagram)malloc(sizeof(datagram));
+	memset(data, 0, sizeof(datagram));
 
 	data->ID 		= deserializeShortUnsignedInt(&buffer);
 	data->type 		= deserializeUnsignedChar(&buffer);

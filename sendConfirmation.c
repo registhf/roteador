@@ -3,26 +3,26 @@
 #include <string.h>
 #include "header.h"
 
-static Message createConfirmData(int dest, Router R);
+static Datagram createConfirmData(int dest, Router R);
 
 void sendConfirmation(int dest, int ID, t_arg *arg) {
-	Message data;
+	Datagram data;
 	Packet p;
 
 	data = createConfirmData(dest, arg->R);
 	if (!data)
 		return;
 
+	data->ID = ID;
+
 	p = findOutputRoute(arg->G, arg->R, data);
 	if (!p)
 		return;
 
 	sendDatagram(p, arg);
-
-	destroyPacket(p);
 }
 
-static Message createConfirmData(int dest, Router R) {
+static Datagram createConfirmData(int dest, Router R) {
 	Router src  	= getRouter(R, ROUTER_ID);
 	Router destR 	= getRouter(R, dest);
 
@@ -31,7 +31,7 @@ static Message createConfirmData(int dest, Router R) {
 		return NULL;
 	}
 
-	Message data = (Message)malloc(sizeof(message_data));
+	Datagram data = (Datagram)malloc(sizeof(datagram));
 
 	data->srcID 	= ROUTER_ID;
 	data->destID	= dest;

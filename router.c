@@ -16,9 +16,11 @@ Router getRouter(Router r, int ID) {
 }
 
 // Calcula por qual roteador a mensagem vai sair
-Packet findOutputRoute(Graph G, Router R, Message data) {
+Packet findOutputRoute(Graph G, Router R, Datagram data) {
 	int graphNode, destParent;
 	Packet out = (Packet)malloc(sizeof(packet));
+	memset(out, 0, sizeof(packet));
+
 	Router destRouter;
 
 	if (!G || !R || !data)

@@ -6,7 +6,6 @@
 #include "header.h"
 
 static void forwardDatagram(t_arg *arg);
-static void reinitInterface();
 static void processDatagram(t_arg *arg);
 
 void recieveDatagram(t_arg *arg) {
@@ -14,7 +13,7 @@ void recieveDatagram(t_arg *arg) {
 	struct sockaddr_in si_me, si_other;
 	unsigned int slen = sizeof(si_other);
 	char buffer[INCOMING_BUFLEN];
-	Message recievedData;
+	Datagram recievedData;
 
 	printf("Criando socket do roteador...\n");
 	Router host = getRouter(arg->R, ROUTER_ID);
@@ -71,18 +70,11 @@ static void forwardDatagram(t_arg *arg) {
 			ROUTER_ID, arg->data->ID, arg->data->srcID, arg->data->destID, arg->recv_len);
 	arg->data->TTL--;
 	p = findOutputRoute(arg->G, arg->R, arg->data);
+	p->forward = 1;
 	sendDatagram(p, arg);
-	destroyPacket(p);
 }
 
-static void reinitInterface() {
-	if (INTERFACE_DEST == UI_NO_DEST)
-		printf("#> ");
-	else if(INTERFACE_DEST == UI_CLOSE)
-		return;
-	else
-		printf("%d> ", INTERFACE_DEST);
-}
+
 
 static void processDatagram(t_arg *arg) {
 	if (arg->data->type == T_MESSAGE) {
@@ -91,8 +83,7 @@ static void processDatagram(t_arg *arg) {
 
 		sendConfirmation(arg->data->srcID, arg->data->ID, arg);
 	} else if (arg->data->type == T_CONFIRMATION) {
-		printf("Mensagem #%d enviada para %d com sucesso!\n", arg->data->ID, arg->data->srcID);
+		confirmDelivery(arg->data->srcID, arg->data->ID);
+		destroyDatagram(arg->data);
 	}
-
-	destroyMessage(arg->data);
 }

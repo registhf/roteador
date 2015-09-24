@@ -15,7 +15,7 @@ void userInterface(t_arg *arg) {
 	char message[MAX_LEN_MESSAGE];
 	char destStr[MAX_LEN_INPUT_DEST];
 	INTERFACE_DEST = UI_NO_DEST;
-	sleep(1);
+	usleep(500000);
 	printf("\n--> Informe o ID do destino, depois a mensagem. (Com <enter>)\n--> Informe %d para sair\n\n", UI_CLOSE);
 
 	while(1) {
@@ -97,4 +97,13 @@ static void storm(int dest, t_arg *arg) {
 	for (i = 0; i < 15; i++) {
 		sendMessage(dest, "DIE!", arg);
 	}
+}
+
+void reinitInterface() {
+	if (INTERFACE_DEST == UI_NO_DEST)
+		printf("\n#> ");
+	else if(INTERFACE_DEST == UI_CLOSE)
+		return;
+	else
+		printf("\n%d> ", INTERFACE_DEST);
 }

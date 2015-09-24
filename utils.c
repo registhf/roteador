@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "header.h"
 
-void destroyMessage(Message data) {
+void destroyDatagram(Datagram data) {
 	free(data->destIP);
 	free(data->srcIP);
 	free(data->message);
@@ -12,7 +12,7 @@ void destroyMessage(Message data) {
 
 void destroyPacket(Packet R) {
 	free(R->IP);
-	destroyMessage(R->data);
+	destroyDatagram(R->data);
 
 	free(R);
 }
@@ -75,10 +75,10 @@ void printNetworkConfig(Graph G) {
 	}
 }
 
-void printMessageData(Message data) {
+void printMessageData(Datagram data) {
 	printf("ID: %d | Type: %d | Code: %d \n", data->ID, data->type, data->code);
 	printf("TTL: %d\n", data->TTL);
 	printf("Destination: %d: %s:%d\n", data->destID, data->destIP, data->destPort);
 	printf("Source: %d: %s:%d\n", data->srcID, data->srcIP, data->srcPort);
-	printf("Message: [%s]\n",	data->message);
+	printf("Datagram: [%s]\n",	data->message);
 }

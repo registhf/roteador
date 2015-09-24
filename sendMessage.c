@@ -3,13 +3,13 @@
 #include <string.h>
 #include "header.h"
 
-static Message createMessage(int dest, char *message, Router R);
+static Datagram createDatagram(int dest, char *message, Router R);
 
 void sendMessage(int dest, char *message, t_arg *arg) {
-	Message data;
+	Datagram data;
 	Packet p;
 
-	data = createMessage(dest, message, arg->R);
+	data = createDatagram(dest, message, arg->R);
 	if (!data)
 		return;
 
@@ -18,11 +18,9 @@ void sendMessage(int dest, char *message, t_arg *arg) {
 		return;
 
 	sendDatagram(p, arg);
-
-	destroyPacket(p);
 }
 
-static Message createMessage(int dest, char *message, Router R) {
+static Datagram createDatagram(int dest, char *message, Router R) {
 	Router src  	= getRouter(R, ROUTER_ID);
 	Router destR 	= getRouter(R, dest);
 
@@ -31,7 +29,7 @@ static Message createMessage(int dest, char *message, Router R) {
 		return NULL;
 	}
 
-	Message data = (Message)malloc(sizeof(message_data));
+	Datagram data = (Datagram)malloc(sizeof(datagram));
 
 	data->srcID 	= ROUTER_ID;
 	data->destID	= dest;
