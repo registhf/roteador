@@ -20,14 +20,17 @@
 // Tipos de mensagem
 #define T_MESSAGE 		1
 #define T_CONFIRMATION 	2
+#define TP_NONE 		0
+#define TP_CONFIRM 		1
+#define TP_FORWARD 		2
 
 #define UI_CLOSE 		-1
 #define UI_NO_DEST 		-2
 
 
-#define TRANSMISSION_USLEEP_TIME 500000 // = 500ms
-#define TRANSMISSION_TIMEOUT 3 			// seconds
-#define TRANSMISSION_MAX_ATTEMPTS 3
+#define TRANSMISSION_USLEEP_TIME 	200000		// 500000 = 500ms
+#define TRANSMISSION_TIMEOUT 		3 			// seconds
+#define TRANSMISSION_MAX_ATTEMPTS 	3
 
 
 /*
@@ -99,7 +102,7 @@ typedef struct packet {
 	time_t timestamp;
 	int attempts;
 	unsigned char delivered;
-	unsigned char forward;
+	unsigned char type; 			// TP_CONFIRM, TP_FORWARD
 	struct packet *next;
 } packet;
 

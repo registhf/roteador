@@ -5,6 +5,8 @@
 
 static Datagram createDatagram(int dest, char *message, Router R);
 
+
+
 void sendMessage(int dest, char *message, t_arg *arg) {
 	Datagram data;
 	Packet p;

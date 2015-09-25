@@ -7,7 +7,8 @@ static void generateDatagramID(Datagram data);
 size_t OUT_BUFF_LEN;
 
 void sendDatagram(Packet p, t_arg *arg) {
-	generateDatagramID(p->data);
+	if (p->type == TP_NONE)
+		generateDatagramID(p->data);
 
 	p->attempts 	= 0;
 	p->delivered 	= 0;

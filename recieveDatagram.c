@@ -70,7 +70,7 @@ static void forwardDatagram(t_arg *arg) {
 			ROUTER_ID, arg->data->ID, arg->data->srcID, arg->data->destID, arg->recv_len);
 	arg->data->TTL--;
 	p = findOutputRoute(arg->G, arg->R, arg->data);
-	p->forward = 1;
+	p->type = TP_FORWARD;
 	sendDatagram(p, arg);
 }
 

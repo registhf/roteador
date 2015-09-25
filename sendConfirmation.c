@@ -19,6 +19,8 @@ void sendConfirmation(int dest, int ID, t_arg *arg) {
 	if (!p)
 		return;
 
+	p->type = TP_CONFIRM;
+
 	sendDatagram(p, arg);
 }
 

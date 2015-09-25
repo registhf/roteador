@@ -12,7 +12,8 @@ Queue TRANSMIT_QUEUE;
 static void initQueue();
 static void dequeuePacket(Packet packet);
 static void sendTo(struct sockaddr_in *si_other, Packet p, int s);
-//static void printFila();
+
+void printFila();
 
 int transmissionControl() {
 	Packet p;
@@ -33,15 +34,13 @@ int transmissionControl() {
 	while (1) {
 		usleep(TRANSMISSION_USLEEP_TIME);
 		if (TRANSMIT_QUEUE->N == 0) continue;
+		//printFila();
 
 		for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next) {
 			if (p->delivered == 1) {
 				printf("Mensagem #%d enviada para %d com sucesso!\n", p->data->ID, p->data->destID);
 				dequeuePacket(p);
-			} else if (p->forward == 1) {
-				sendTo(&si_other, p, s);
-				dequeuePacket(p);
-			} else if (p->data->type == T_CONFIRMATION) {
+			} else if (p->type == TP_FORWARD || p->type == TP_CONFIRM) {
 				sendTo(&si_other, p, s);
 				dequeuePacket(p);
 			} else if (p->attempts == 0) {
@@ -91,6 +90,7 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s) {
 	free(serial_data);
 }
 
+
 void queuePacket(Packet packet) {
 	Packet p;
 
@@ -106,14 +106,17 @@ void queuePacket(Packet packet) {
 	TRANSMIT_QUEUE->N++;
 }
 
+
 void confirmDelivery(int destID, short unsigned int ID) {
 	Packet p;
 	for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next) {
 		if (p->data->destID == destID && p->data->ID == ID) {
 			p->delivered = 1;
+			//printf("#%d -> %d confirmado!\n", ID, destID);
 		}
 	}
 }
+
 
 static void dequeuePacket(Packet packet) {
 	Packet p, ant = NULL;
@@ -132,6 +135,7 @@ static void dequeuePacket(Packet packet) {
 	}
 }
 
+
 static void initQueue() {
 	TRANSMIT_QUEUE = (Queue)malloc(sizeof(control_queue));
 	TRANSMIT_QUEUE->N = 0;
@@ -139,14 +143,13 @@ static void initQueue() {
 }
 
 
-/*
-static void printFila() {
+void printFila() {
 	Packet p;
 	printf("------------------------\n");
 	printf("Tamanho da fila: %d\n", TRANSMIT_QUEUE->N);
-	printf("ID \t| Source \t| Dest \t| Type \t| Forward \t| Attempts \t| Delivered\n");
+	printf("ID \t| Source \t| Dest \t| Type \t| Type \t| Attempts \t| Delivered\n");
 	for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next) {
-		printf(" %d \t| %d \t\t|%d \t|%d \t|%d \t\t|%d \t\t| %u\n", p->data->ID, p->data->srcID, p->data->destID, p->data->type, p->forward, p->attempts, p->delivered);
+		printf(" %d \t| %d \t\t|%d \t|%d \t|%d \t\t|%d \t\t| %u\n", p->data->ID, p->data->srcID, p->data->destID, p->data->type, p->type, p->attempts, p->delivered);
 	}
 	printf("------------------------\n");
-}*/
+}

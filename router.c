@@ -42,6 +42,7 @@ Packet findOutputRoute(Graph G, Router R, Datagram data) {
 		return NULL;
 	}
 
+	out->type = TP_NONE;
 	out->data = data;
 	out->port = destRouter->port;
 	out->IP   = (char *)malloc(1 + (sizeof(char) * strlen(destRouter->IP)));
