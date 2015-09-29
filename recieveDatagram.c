@@ -77,12 +77,12 @@ static void forwardDatagram(t_arg *arg) {
 
 
 static void processDatagram(t_arg *arg) {
-	if (arg->data->type == T_MESSAGE) {
+	if (arg->data->type == TM_MESSAGE) {
 		printf("\nMensagem de %d: \"", arg->data->srcID);
 		printf("%s\"\n", arg->data->message);
 
 		sendConfirmation(arg->data->srcID, arg->data->ID, arg);
-	} else if (arg->data->type == T_CONFIRMATION) {
+	} else if (arg->data->type == TM_CONFIRM) {
 		confirmDelivery(arg->data->srcID, arg->data->ID);
 		destroyDatagram(arg->data);
 	}

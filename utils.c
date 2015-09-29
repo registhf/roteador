@@ -3,8 +3,8 @@
 #include "header.h"
 
 void destroyDatagram(Datagram data) {
-	free(data->destIP);
-	free(data->srcIP);
+	//free(data->destIP);
+	//free(data->srcIP);
 	free(data->message);
 
 	free(data);
@@ -78,7 +78,7 @@ void printNetworkConfig(Graph G) {
 void printMessageData(Datagram data) {
 	printf("ID: %d | Type: %d | Code: %d \n", data->ID, data->type, data->code);
 	printf("TTL: %d\n", data->TTL);
-	printf("Destination: %d: %s:%d\n", data->destID, data->destIP, data->destPort);
-	printf("Source: %d: %s:%d\n", data->srcID, data->srcIP, data->srcPort);
+	//printf("Destination: %d: %s:%d\n", data->destID, data->destIP, data->destPort);
+	//printf("Source: %d: %s:%d\n", data->srcID, data->srcIP, data->srcPort);
 	printf("Datagram: [%s]\n",	data->message);
 }

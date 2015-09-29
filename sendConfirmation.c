@@ -39,15 +39,15 @@ static Datagram createConfirmData(int dest, Router R) {
 	data->destID	= dest;
 	data->message 	= (char *)malloc(sizeof(char));
 	data->message[0]= '\0';
-	data->destIP 	= (char *)malloc(1 + (sizeof(char) * strlen(destR->IP)));
-	data->srcIP 	= (char *)malloc(1 + (sizeof(char) * strlen(src->IP)));
-	data->destPort 	= destR->port;
-	data->srcPort 	= src->port;
-	data->type 		= T_CONFIRMATION;
+	//data->destIP 	= (char *)malloc(1 + (sizeof(char) * strlen(destR->IP)));
+	//data->srcIP 	= (char *)malloc(1 + (sizeof(char) * strlen(src->IP)));
+	//data->destPort 	= destR->port;
+	//data->srcPort 	= src->port;
+	data->type 		= TM_CONFIRM;
 	data->code 		= NOT_USED;
 	data->TTL 		= DEFAULT_TTL;
-	strcpy(data->destIP, destR->IP);
-	strcpy(data->srcIP, src->IP);
+	//strcpy(data->destIP, destR->IP);
+	//strcpy(data->srcIP, src->IP);
 
 	return data;
 }

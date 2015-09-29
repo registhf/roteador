@@ -17,7 +17,7 @@ void sendDatagram(Packet p, t_arg *arg) {
 }
 
 static void generateDatagramID(Datagram data) {
-	if (data->type == T_CONFIRMATION)
+	if (data->type == TM_CONFIRM)
 		return;
 
 

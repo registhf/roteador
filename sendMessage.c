@@ -36,16 +36,16 @@ static Datagram createDatagram(int dest, char *message, Router R) {
 	data->srcID 	= ROUTER_ID;
 	data->destID	= dest;
 	data->message 	= (char *)malloc(1 + (sizeof(char) * strlen(message)));
-	data->destIP 	= (char *)malloc(1 + (sizeof(char) * strlen(destR->IP)));
-	data->srcIP 	= (char *)malloc(1 + (sizeof(char) * strlen(src->IP)));
-	data->destPort 	= destR->port;
-	data->srcPort 	= src->port;
-	data->type 		= T_MESSAGE;
+	//data->destIP 	= (char *)malloc(1 + (sizeof(char) * strlen(destR->IP)));
+	//data->srcIP 	= (char *)malloc(1 + (sizeof(char) * strlen(src->IP)));
+	//data->destPort 	= destR->port;
+	//data->srcPort 	= src->port;
+	data->type 		= TM_MESSAGE;
 	data->code 		= NOT_USED;
 	data->TTL 		= DEFAULT_TTL;
 	strcpy(data->message, message);
-	strcpy(data->destIP, destR->IP);
-	strcpy(data->srcIP, src->IP);
+	//strcpy(data->destIP, destR->IP);
+	//strcpy(data->srcIP, src->IP);
 
 	return data;
 }

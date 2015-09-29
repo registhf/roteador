@@ -18,8 +18,8 @@
 #define NOT_USED 		0
 
 // Tipos de mensagem
-#define T_MESSAGE 		1
-#define T_CONFIRMATION 	2
+#define TM_MESSAGE 		1
+#define TM_CONFIRM 	2
 #define TP_NONE 		0
 #define TP_CONFIRM 		1
 #define TP_FORWARD 		2
@@ -79,14 +79,14 @@ typedef struct graph *Graph;
 
 
 typedef struct datagram {
-	short unsigned int ID;
 	unsigned char type;
 	unsigned char code;
+	short unsigned int ID;
 	short unsigned int TTL;
-	char *destIP;
-	char *srcIP;
-	int destPort;
-	int srcPort;
+	//char *destIP;
+	//char *srcIP;
+	//int destPort;
+	//int srcPort;
 	int destID;
 	int srcID;
 	char *message;
