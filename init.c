@@ -64,6 +64,8 @@ int main(int argc, char const *argv[]) {
 	free(arg);
 	destroyGraph(G);
 	destroyRouterList(R);
+	printFila();
+	destroyGlobalQueue();
 	printf("Ok!\n");
 	return 0;
 }

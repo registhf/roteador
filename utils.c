@@ -3,10 +3,7 @@
 #include "header.h"
 
 void destroyDatagram(Datagram data) {
-	//free(data->destIP);
-	//free(data->srcIP);
 	free(data->message);
-
 	free(data);
 }
 
@@ -43,6 +40,21 @@ void destroyGraph(Graph G) {
 	free(G->parent);
 	free(G->dist);
 	free(G);
+}
+
+void destroyGlobalQueue() {
+	Packet p, a = NULL;
+
+	if (TRANSMIT_QUEUE->N > 0) {
+		for (p = TRANSMIT_QUEUE->first; p != NULL; a = p, p = p->next)
+			if (a != NULL)
+				destroyPacket(a);
+
+		if (a != NULL)
+			destroyPacket(a);
+	}
+
+	free(TRANSMIT_QUEUE);
 }
 
 void printRouters(Router r) {

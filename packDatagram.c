@@ -19,10 +19,6 @@ void *packDatagram(Datagram data) {
 	serializeUnsignedChar(		&buffer, data->code);
 	serializeShortUnsignedInt(	&buffer, data->ID);
 	serializeShortUnsignedInt(	&buffer, data->TTL);
-	//serializeString(			&buffer, data->destIP);
-	//serializeString(			&buffer, data->srcIP);
-	//serializeInt(				&buffer, data->destPort);
-	//serializeInt(				&buffer, data->srcPort);
 	serializeInt(				&buffer, data->destID);
 	serializeInt(				&buffer, data->srcID);
 	serializeString(			&buffer, data->message);
@@ -31,9 +27,8 @@ void *packDatagram(Datagram data) {
 }
 
 static size_t calcBufferLen(Datagram data) {
-	return 	sizeof(int)*2/*4*/ + sizeof(short unsigned int)*2 + (sizeof(unsigned char)+1)*2
-	 		+ (sizeof(char)*strlen(data->message))+1 /*+ (sizeof(char)*strlen(data->destIP))+1
-	 		+ (sizeof(char)*strlen(data->srcIP))+1*/;
+	return 	sizeof(int)*2 + sizeof(short unsigned int)*2 + (sizeof(unsigned char)+1)*2
+	 		+ (sizeof(char)*strlen(data->message))+1;
 }
 
 static void serializeString(void **buffer, char *str) {

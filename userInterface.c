@@ -94,9 +94,9 @@ static void fixMessageInput(char *message) {
 
 static void storm(int dest, t_arg *arg) {
 	int i;
-	for (i = 0; i < 15; i++) {
+
+	for (i = 0; i < 15; i++)
 		sendMessage(dest, "DIE!", arg);
-	}
 }
 
 void reinitInterface() {

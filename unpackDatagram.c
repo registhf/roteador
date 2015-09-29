@@ -15,10 +15,6 @@ Datagram unpackDatagram(void *buffer) {
 	data->code 		= deserializeUnsignedChar(&buffer);
 	data->ID 		= deserializeShortUnsignedInt(&buffer);
 	data->TTL 		= deserializeShortUnsignedInt(&buffer);
-	//data->destIP 	= deserializeString(&buffer);
-	//data->srcIP 	= deserializeString(&buffer);
-	//data->destPort 	= deserializeInt(&buffer);
-	//data->srcPort 	= deserializeInt(&buffer);
 	data->destID 	= deserializeInt(&buffer);
 	data->srcID 	= deserializeInt(&buffer);
 	data->message 	= deserializeString(&buffer);

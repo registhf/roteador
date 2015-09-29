@@ -83,10 +83,6 @@ typedef struct datagram {
 	unsigned char code;
 	short unsigned int ID;
 	short unsigned int TTL;
-	//char *destIP;
-	//char *srcIP;
-	//int destPort;
-	//int srcPort;
 	int destID;
 	int srcID;
 	char *message;
@@ -219,3 +215,7 @@ int transmissionControl();
 void confirmDelivery(int destID, short unsigned int ID);
 
 void reinitInterface();
+
+void destroyGlobalQueue();
+
+void printFila();

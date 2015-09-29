@@ -13,8 +13,6 @@ static void initQueue();
 static void dequeuePacket(Packet packet);
 static void sendTo(struct sockaddr_in *si_other, Packet p, int s);
 
-void printFila();
-
 int transmissionControl() {
 	Packet p;
 	struct sockaddr_in si_other;
@@ -109,17 +107,16 @@ void queuePacket(Packet packet) {
 
 void confirmDelivery(int destID, short unsigned int ID) {
 	Packet p;
-	for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next) {
-		if (p->data->destID == destID && p->data->ID == ID) {
+
+	for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next)
+		if (p->data->destID == destID && p->data->ID == ID)
 			p->delivered = 1;
-			//printf("#%d -> %d confirmado!\n", ID, destID);
-		}
-	}
 }
 
 
 static void dequeuePacket(Packet packet) {
 	Packet p, ant = NULL;
+
 	if (TRANSMIT_QUEUE->N == 0) return;
 
 	for (p = TRANSMIT_QUEUE->first; p != NULL && p != packet; p = p->next) {
@@ -127,10 +124,12 @@ static void dequeuePacket(Packet packet) {
 	}
 
 	if (p == packet) {
-		if (ant != NULL)
+		if (p == TRANSMIT_QUEUE->first)
+			TRANSMIT_QUEUE->first = NULL;
+		else
 			ant->next = p->next;
-		destroyPacket(packet);
 
+		destroyPacket(p);
 		TRANSMIT_QUEUE->N--;
 	}
 }
@@ -149,7 +148,7 @@ void printFila() {
 	printf("Tamanho da fila: %d\n", TRANSMIT_QUEUE->N);
 	printf("ID \t| Source \t| Dest \t| Type \t| Type \t| Attempts \t| Delivered\n");
 	for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next) {
-		printf(" %d \t| %d \t\t|%d \t|%d \t|%d \t\t|%d \t\t| %u\n", p->data->ID, p->data->srcID, p->data->destID, p->data->type, p->type, p->attempts, p->delivered);
+		printf(" %d \t| %d \t\t|%d \t|%d \t|%d \t|%d \t\t| %u\n", p->data->ID, p->data->srcID, p->data->destID, p->data->type, p->type, p->attempts, p->delivered);
 	}
 	printf("------------------------\n");
 }

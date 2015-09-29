@@ -82,8 +82,8 @@ static void processDatagram(t_arg *arg) {
 		printf("%s\"\n", arg->data->message);
 
 		sendConfirmation(arg->data->srcID, arg->data->ID, arg);
-	} else if (arg->data->type == TM_CONFIRM) {
+	} else if (arg->data->type == TM_CONFIRM)
 		confirmDelivery(arg->data->srcID, arg->data->ID);
-		destroyDatagram(arg->data);
-	}
+
+	destroyDatagram(arg->data);
 }
