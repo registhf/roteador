@@ -116,6 +116,7 @@ typedef struct t_arg {
 
 typedef struct control_queue {
 	unsigned int N;
+	pthread_mutex_t mutex;
 	Packet first;
 } control_queue;
 

@@ -9,6 +9,7 @@
 #include "header.h"
 
 Queue TRANSMIT_QUEUE;
+
 static void initQueue();
 static void dequeuePacket(Packet packet);
 static void sendTo(struct sockaddr_in *si_other, Packet p, int s);
@@ -33,6 +34,8 @@ int transmissionControl() {
 		usleep(TRANSMISSION_USLEEP_TIME);
 		if (TRANSMIT_QUEUE->N == 0) continue;
 		//printFila();
+
+		pthread_mutex_lock(&TRANSMIT_QUEUE->mutex);
 
 		for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next) {
 			if (p->delivered == 1) {
@@ -64,6 +67,8 @@ int transmissionControl() {
 				}
 			}
 		}
+
+		pthread_mutex_unlock(&TRANSMIT_QUEUE->mutex);
 	}
 
 	return 0;
@@ -92,6 +97,8 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s) {
 void queuePacket(Packet packet) {
 	Packet p;
 
+	pthread_mutex_lock(&TRANSMIT_QUEUE->mutex);
+
 	if (TRANSMIT_QUEUE->N == 0) {
 		packet->next = NULL;
 		TRANSMIT_QUEUE->first = packet;
@@ -102,6 +109,8 @@ void queuePacket(Packet packet) {
 	}
 
 	TRANSMIT_QUEUE->N++;
+
+	pthread_mutex_unlock(&TRANSMIT_QUEUE->mutex);
 }
 
 
@@ -119,13 +128,11 @@ static void dequeuePacket(Packet packet) {
 
 	if (TRANSMIT_QUEUE->N == 0) return;
 
-	for (p = TRANSMIT_QUEUE->first; p != NULL && p != packet; p = p->next) {
-		ant = p;
-	}
+	for (ant = p = TRANSMIT_QUEUE->first; p != NULL && p != packet; ant = p, p = p->next);
 
 	if (p == packet) {
 		if (p == TRANSMIT_QUEUE->first)
-			TRANSMIT_QUEUE->first = NULL;
+			TRANSMIT_QUEUE->first = p->next;
 		else
 			ant->next = p->next;
 
@@ -139,6 +146,7 @@ static void initQueue() {
 	TRANSMIT_QUEUE = (Queue)malloc(sizeof(control_queue));
 	TRANSMIT_QUEUE->N = 0;
 	TRANSMIT_QUEUE->first = NULL;
+	pthread_mutex_init(&TRANSMIT_QUEUE->mutex, NULL);
 }
 
 
