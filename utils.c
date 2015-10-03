@@ -8,8 +8,8 @@ void destroyDatagram(Datagram data) {
 }
 
 void destroyPacket(Packet R) {
-	free(R->IP);
 	destroyDatagram(R->data);
+	free(R->IP);
 
 	free(R);
 }
