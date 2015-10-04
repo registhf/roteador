@@ -8,9 +8,9 @@
 #define MAX_LEN_MESSAGE 	100
 
 //					  		su_int 	u_char 	int     message 			fator_cagaço
-#define INCOMING_BUFLEN 	(2*2 + 	1*2 + 	4*2 + 	MAX_LEN_MESSAGE+1)	*2
+#define INCOMING_BUFLEN 	((2*2 + 	1*2 + 	4*2 + 	MAX_LEN_MESSAGE+1)	*2)
 
-#define MAX_LEN_INPUT_DEST 	10+2 // 10 max strlen int + 1 (\n) + 1 (\0) (fgets)
+#define MAX_LEN_INPUT_DEST 	(10+2) // 10 max strlen int + 1 (\n) + 1 (\0) (fgets)
 
 #define MAX_DGRAM_ID 		32000
 #define DEFAULT_TTL 		30
@@ -99,13 +99,12 @@ typedef struct packet {
 	char *IP;
 	int port;
 	Datagram data;
-	long long timestamp;
+	long timestamp;
 	int attempts;
 	unsigned char delivered;
 	unsigned char type; 			// TP_CONFIRM, TP_FORWARD
 	struct packet *next;
 } packet;
-
 
 typedef struct packet *Packet;
 

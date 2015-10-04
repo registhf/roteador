@@ -7,11 +7,11 @@ void destroyDatagram(Datagram data) {
 	free(data);
 }
 
-void destroyPacket(Packet R) {
-	destroyDatagram(R->data);
-	free(R->IP);
+void destroyPacket(Packet P) {
+	destroyDatagram(P->data);
+	free(P->IP);
 
-	free(R);
+	free(P);
 }
 
 void destroyRouterList(Router r) {

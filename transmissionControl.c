@@ -17,7 +17,7 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s);
 static long getMillisecondsOfDay();
 
 int transmissionControl() {
-	Packet p;
+	Packet p, tmp;
 	struct sockaddr_in si_other;
 	int s;
 
@@ -36,16 +36,19 @@ int transmissionControl() {
 	while (1) {
 		usleep(TRANSM_USLEEP_TIME);
 		if (TRANSMIT_QUEUE->N == 0) continue;
-		//printFila();
 
 		pthread_mutex_lock(&TRANSMIT_QUEUE->mutex);
 
-		for (p = TRANSMIT_QUEUE->first; p != NULL; p = p->next) {
+		for (p = TRANSMIT_QUEUE->first; p != NULL; p = tmp) {
+			tmp = p->next;
+
 			if (p->delivered == 1) {
 				printf("Mensagem #%d enviada para %d com sucesso!\n", p->data->ID, p->data->destID);
+
 				dequeuePacket(p);
 			} else if (p->type == TP_FORWARD || p->type == TP_CONFIRM) {
 				sendTo(&si_other, p, s);
+
 				dequeuePacket(p);
 			} else if (p->attempts == 0) {
 				sendTo(&si_other, p, s);
@@ -59,6 +62,7 @@ int transmissionControl() {
 
 				if (p->attempts >= TRANSM_MAX_ATTEMPTS && elapsed > TRANSM_TIMEOUT) {
 					printf("Não foi possível enviar a mensagem #%d ao roteador %d.\n", p->data->ID, p->data->destID);
+
 					dequeuePacket(p);
 				} else {
 					if (elapsed > TRANSM_TIMEOUT) {
@@ -141,6 +145,7 @@ static void dequeuePacket(Packet packet) {
 			ant->next = p->next;
 
 		destroyPacket(p);
+
 		TRANSMIT_QUEUE->N--;
 	}
 }

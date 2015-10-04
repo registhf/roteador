@@ -17,7 +17,7 @@ static char args_doc[] = "--ID=[ID do roteador] | -i[ID do roteador]";
 static struct argp_option options[] = {
   {"ID",		'i', "ID do roteador",			OPTION_NO_USAGE, "ID do roteador" },
   {"timeout",	't', "Tempo em ms",				OPTION_NO_USAGE, "Tempo máximo de espera por resposta em uma tentativa" },
-  {"attempts",	'a', "Número de tentativas",	OPTION_NO_USAGE, "Número máximo de tentativas de envio de uma mensagem" },
+  {"retries",	'r', "Número de tentativas",	OPTION_NO_USAGE, "Número máximo de tentativas de envio de uma mensagem" },
   {"sleep",		's', "Tempo em ms",				OPTION_NO_USAGE, "Tempo de espera para processar a fila de transmissão" },
   {0}
 };
@@ -28,7 +28,7 @@ struct arguments {
 	char **strings;
 	int ID;
 	int timeout;
-	int attempts;
+	int retries;
 	int sleep;
 };
 
@@ -41,17 +41,17 @@ void readArgs(int argc, char const *argv[]) {
 	/* Default values. */
 	arguments.ID 		= 0;
 	arguments.timeout 	= DF_TRANSM_TIMEOUT;
-	arguments.attempts 	= DF_TRANSM_MAX_ATTEMPTS;
+	arguments.retries 	= DF_TRANSM_MAX_ATTEMPTS;
 	arguments.sleep 	= DF_TRANSM_USLEEP_TIME;
 
 	argp_parse(&argp, argc, (void *)argv, 0, 0, &arguments);
 
 	ROUTER_ID 			= arguments.ID;
 	TRANSM_TIMEOUT 		= arguments.timeout;
-	TRANSM_MAX_ATTEMPTS = arguments.attempts;
+	TRANSM_MAX_ATTEMPTS = arguments.retries;
 	TRANSM_USLEEP_TIME 	= arguments.sleep;
 
-	//printf("ID: %d, timeout: %d, attempts: %d, sleep: %d\n", ROUTER_ID, TRANSM_TIMEOUT, TRANSM_MAX_ATTEMPTS, TRANSM_USLEEP_TIME);
+	//printf("ID: %d, timeout: %d, retries: %d, sleep: %d\n", ROUTER_ID, TRANSM_TIMEOUT, TRANSM_MAX_ATTEMPTS, TRANSM_USLEEP_TIME);
 }
 
 
@@ -67,8 +67,8 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		case 't':
 			arguments->timeout = arg ? atoi(arg) : DF_TRANSM_TIMEOUT;
 			break;
-		case 'a':
-			arguments->attempts = arg ? atoi(arg) : DF_TRANSM_MAX_ATTEMPTS;
+		case 'r':
+			arguments->retries = arg ? atoi(arg) : DF_TRANSM_MAX_ATTEMPTS;
 			break;
 		case 's':
 			arguments->sleep = arg ? atoi(arg)*1000 : DF_TRANSM_USLEEP_TIME;

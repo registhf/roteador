@@ -9,7 +9,7 @@ static int findIDInList(int *list, int len, int ID);
  */
 Graph readLinkConfig() {
 	FILE *config;
-	Graph G;
+	Graph G = NULL;
 	int v, w, cost, ID[MAX_V], count = 0;
 
 	for (v = 0; v < MAX_V; v++) {

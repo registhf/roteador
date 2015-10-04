@@ -12,7 +12,7 @@ static void fixMessageInput(char *message);
 static void storm(int dest, t_arg *arg);
 
 void userInterface(t_arg *arg) {
-	char message[MAX_LEN_MESSAGE];
+	char message[(MAX_LEN_MESSAGE*5)+1];
 	char destStr[MAX_LEN_INPUT_DEST];
 	INTERFACE_DEST = UI_NO_DEST;
 	usleep(500000);
@@ -21,33 +21,37 @@ void userInterface(t_arg *arg) {
 	while(1) {
 		INTERFACE_DEST = UI_NO_DEST;
 
-	    printf("#> ");
+		printf("#> ");
 
-	    fgets(destStr, MAX_LEN_INPUT_DEST, stdin);
-	    if (!isNumber(destStr)) {
-	    	if (strlen(destStr) > 1)
-	    		printf("Destino inválido, verifique.\n");
-	    	continue;
-	    }
+		if (!fgets(destStr, MAX_LEN_INPUT_DEST, stdin))
+			continue;
 
-	    INTERFACE_DEST = atoi(destStr);
+		if (!isNumber(destStr)) {
+			if (strlen(destStr) > 1)
+				printf("Destino inválido, verifique.\n");
+			continue;
+		}
 
-	    if (INTERFACE_DEST == UI_CLOSE) {
-	    	printf("Desligando...\n");
-	    	return;
-	    }
+		INTERFACE_DEST = atoi(destStr);
 
-	    printf("%d> ", INTERFACE_DEST);
+		if (INTERFACE_DEST == UI_CLOSE) {
+			printf("Desligando...\n");
+			return;
+		}
 
-	    // Caracteres acentuados ocupam duas posições, deixei o fgets aceitando
-	    // até duas vezes o máximo, mas trato o limite em fixMessageInput daí.
-	    fgets(message, MAX_LEN_MESSAGE*2, stdin);
-	    fixMessageInput(message);
+		printf("%d> ", INTERFACE_DEST);
 
-	    if (strcmp(message, "storm") == 0)
-	    	storm(INTERFACE_DEST, arg);
-	    else
-	    	sendMessage(INTERFACE_DEST, message, arg);
+		// Caracteres acentuados ocupam duas posições, deixei o fgets aceitando
+		// até cinco vezes o máximo, mas trato o limite em fixMessageInput daí.
+		if (!fgets(message, (MAX_LEN_MESSAGE*5)+1, stdin))
+			continue;
+
+		fixMessageInput(message);
+
+		if (strcmp(message, "storm") == 0)
+			storm(INTERFACE_DEST, arg);
+		else
+			sendMessage(INTERFACE_DEST, message, arg);
 	}
 }
 
@@ -75,6 +79,7 @@ static void fixMessageInput(char *message) {
 
 	for (i = 0; i < max; i++) {
 		if ((int)message[i] < 0) {
+			printf("%d\n", (int)message[i]);
 			if (c) {
 				max++;
 				c = 0;
