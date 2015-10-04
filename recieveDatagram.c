@@ -58,8 +58,6 @@ void recieveDatagram(t_arg *arg) {
 		} else {
 			forwardDatagram(arg);
 		}
-
-		reinitInterface();
 	}
 }
 

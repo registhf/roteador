@@ -3,12 +3,17 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <argp.h>
 #include "header.h"
 
 
 // Instancia as variáveis globais
 unsigned int		ROUTER_ID;
+unsigned int 		TRANSM_TIMEOUT;
+unsigned int 		TRANSM_MAX_ATTEMPTS;
+unsigned int 		TRANSM_USLEEP_TIME;
 short unsigned int 	LAST_SENT_DGRAM_ID;
+
 
 int main(int argc, char const *argv[]) {
 	Router R;
@@ -16,19 +21,15 @@ int main(int argc, char const *argv[]) {
 	pthread_t L[3];
 	t_arg *arg = malloc(sizeof(t_arg));
 
-	if (argc > 1) {
-		ROUTER_ID = atoi(argv[1]);
-		printf("Carregando configuração do roteador #%d...\n", ROUTER_ID);
-	} else {
-		printf("ERRO: Defina o ID deste roteador no argumento do programa!\n");
-		exit(1);
-	}
+	readArgs(argc, argv);
+	printf("Carregando configuração do roteador #%d...\n", ROUTER_ID);
 
 	// Carrega para a lista r as configurações dos roteadores lendo
 	// os dados do arquivo roteador.config
 	R = readRouterConfig();
 	if (getRouter(R, ROUTER_ID) == NULL) {
 		printf("ERRO: ID definida para o roteador não está configurada!\n");
+		printf("\nDigite: ./Router --help, caso precise de ajuda\n");
 		exit(1);
 	}
 
@@ -64,7 +65,7 @@ int main(int argc, char const *argv[]) {
 	free(arg);
 	destroyGraph(G);
 	destroyRouterList(R);
-	printFila();
+	//printFila();
 	destroyGlobalQueue();
 	printf("Ok!\n");
 	return 0;

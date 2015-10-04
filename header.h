@@ -7,15 +7,15 @@
 // Limites
 #define MAX_LEN_MESSAGE 	100
 
-//					  su_int u_char int   2ip  		 message
-#define INCOMING_BUFLEN 2*2 + 1*2 + 4*4 + 16*2 + MAX_LEN_MESSAGE+1
+//					  		su_int 	u_char 	int     message 			fator_cagaço
+#define INCOMING_BUFLEN 	(2*2 + 	1*2 + 	4*2 + 	MAX_LEN_MESSAGE+1)	*2
 
 #define MAX_LEN_INPUT_DEST 	10+2 // 10 max strlen int + 1 (\n) + 1 (\0) (fgets)
 
 #define MAX_DGRAM_ID 		32000
 #define DEFAULT_TTL 		30
 
-#define NOT_USED 		0
+#define NOT_USED 			0
 
 // Tipos de mensagem
 #define TM_MESSAGE 		1
@@ -27,11 +27,15 @@
 #define UI_CLOSE 		-1
 #define UI_NO_DEST 		-2
 
+// PARÂMETROS DEFAULT:
+#define DF_TRANSM_USLEEP_TIME 	200000		// 500000 = 500ms
+#define DF_TRANSM_TIMEOUT 		3000		// ms
+#define DF_TRANSM_MAX_ATTEMPTS 	3
 
-#define TRANSMISSION_USLEEP_TIME 	200000		// 500000 = 500ms
-#define TRANSMISSION_TIMEOUT 		3 			// seconds
-#define TRANSMISSION_MAX_ATTEMPTS 	3
-
+// Variáveis globais para os parâmetros
+extern unsigned int TRANSM_USLEEP_TIME;
+extern unsigned int TRANSM_TIMEOUT;
+extern unsigned int TRANSM_MAX_ATTEMPTS;
 
 /*
  * Estrutura utilizada para representar a lista
@@ -95,7 +99,7 @@ typedef struct packet {
 	char *IP;
 	int port;
 	Datagram data;
-	time_t timestamp;
+	long long timestamp;
 	int attempts;
 	unsigned char delivered;
 	unsigned char type; 			// TP_CONFIRM, TP_FORWARD
@@ -128,6 +132,11 @@ extern short unsigned int LAST_SENT_DGRAM_ID;
 extern unsigned int 	  INTERFACE_DEST;
 extern size_t 			  OUT_BUFF_LEN;
 extern Queue 			  TRANSMIT_QUEUE;
+
+
+
+
+void readArgs(int argc, char const *argv[]);
 
 /*
  * Lê as configurações dos roteadores no arquivo roteador.config.
@@ -214,8 +223,6 @@ void queuePacket(Packet packet);
 int transmissionControl();
 
 void confirmDelivery(int destID, short unsigned int ID);
-
-void reinitInterface();
 
 void destroyGlobalQueue();
 

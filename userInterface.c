@@ -98,12 +98,3 @@ static void storm(int dest, t_arg *arg) {
 	for (i = 0; i < 15; i++)
 		sendMessage(dest, "DIE!", arg);
 }
-
-void reinitInterface() {
-	if (INTERFACE_DEST == UI_NO_DEST)
-		printf("\n#> ");
-	else if(INTERFACE_DEST == UI_CLOSE)
-		return;
-	else
-		printf("\n%d> ", INTERFACE_DEST);
-}

@@ -27,7 +27,9 @@ void *packDatagram(Datagram data) {
 }
 
 static size_t calcBufferLen(Datagram data) {
-	return 	sizeof(int)*2 + sizeof(short unsigned int)*2 + (sizeof(unsigned char)+1)*2
+	return 	sizeof(int)*2
+			+ sizeof(short unsigned int)*2
+			+ (sizeof(unsigned char)+1)*2
 	 		+ (sizeof(char)*strlen(data->message))+1;
 }
 

@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/time.h>
 #include <time.h>
 #include "header.h"
 
@@ -13,6 +14,7 @@ Queue TRANSMIT_QUEUE;
 static void initQueue();
 static void dequeuePacket(Packet packet);
 static void sendTo(struct sockaddr_in *si_other, Packet p, int s);
+static long getMillisecondsOfDay();
 
 int transmissionControl() {
 	Packet p;
@@ -30,8 +32,9 @@ int transmissionControl() {
 	memset((char *) &si_other, 0, sizeof(si_other));
 	si_other.sin_family = AF_INET;
 
+	#define divi 10.0
 	while (1) {
-		usleep(TRANSMISSION_USLEEP_TIME);
+		usleep(TRANSM_USLEEP_TIME);
 		if (TRANSMIT_QUEUE->N == 0) continue;
 		//printFila();
 
@@ -47,21 +50,22 @@ int transmissionControl() {
 			} else if (p->attempts == 0) {
 				sendTo(&si_other, p, s);
 
-				p->timestamp = time(0);
+				p->timestamp = getMillisecondsOfDay();
+
 				p->attempts++;
 				printf("Enviando mensagem #%d para roteador %d.\n", p->data->ID, p->data->destID);
 			} else if (p->attempts > 0) {
-				double elapsed = difftime(time(0), p->timestamp);
+				long elapsed = getMillisecondsOfDay() - p->timestamp;
 
-				if (p->attempts >= TRANSMISSION_MAX_ATTEMPTS && elapsed > TRANSMISSION_TIMEOUT) {
+				if (p->attempts >= TRANSM_MAX_ATTEMPTS && elapsed > TRANSM_TIMEOUT) {
 					printf("Não foi possível enviar a mensagem #%d ao roteador %d.\n", p->data->ID, p->data->destID);
 					dequeuePacket(p);
 				} else {
-					if (elapsed > TRANSMISSION_TIMEOUT) {
+					if (elapsed > TRANSM_TIMEOUT) {
 						printf("Tentando enviar o pacote #%d para o roteador %d pela %dª vez.\n", p->data->ID, p->data->destID, p->attempts+1);
 						sendTo(&si_other, p, s);
 
-						p->timestamp = time(0);
+						p->timestamp = getMillisecondsOfDay();
 						p->attempts++;
 					}
 				}
@@ -147,6 +151,16 @@ static void initQueue() {
 	TRANSMIT_QUEUE->N = 0;
 	TRANSMIT_QUEUE->first = NULL;
 	pthread_mutex_init(&TRANSMIT_QUEUE->mutex, NULL);
+}
+
+static long getMillisecondsOfDay() {
+	struct timeval tim;
+	gettimeofday(&tim, NULL);
+
+	//printf("%lf | ", tim.tv_sec+(tim.tv_usec/1000000.0));
+	//printf("%lf | ", (tim.tv_sec+(tim.tv_usec/1000000.0)) * 1000);
+	//printf("%ld\n", (long)((tim.tv_sec+(tim.tv_usec/1000000.0)) * 1000));
+	return (long)((tim.tv_sec+(tim.tv_usec/1000000.0)) * 1000);
 }
 
 
