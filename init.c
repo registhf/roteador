@@ -52,7 +52,7 @@ int main(int argc, char const *argv[]) {
 
 	pthread_create(&L[0], NULL, (void *)recieveDatagram, (void *)arg);
 	pthread_create(&L[1], NULL, (void *)userInterface, (void *)arg);
-	pthread_create(&L[2], NULL, (void *)transmissionControl, (void *)arg);
+	pthread_create(&L[2], NULL, (void *)transmissionControl, NULL);
 
 	pthread_join(L[1], NULL);
 

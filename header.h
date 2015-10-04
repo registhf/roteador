@@ -293,27 +293,52 @@ void sendDatagram(Packet p, t_arg *arg);
 // recebidas, ou encaminhando o que for necessário
 void recieveDatagram(t_arg *arg);
 
+// Busca no vetor G->parent por onde o pacote deve sair
+// para chegar ao destino definido
 Packet findOutputRoute(Graph G, Router R, Datagram data);
 
+// Converte um Datagram em uma sequência de bytes para
+// enviar para o socket
 void *packDatagram(Datagram data);
 
+// Converte uma sequência de bytes recebida pelo
+// socket em um Datagram
 Datagram unpackDatagram(void *buffer);
 
+// Envia uma confirmação de recebimento de mensagem
+// para a origem do pacote
 void sendConfirmation(int dest, int ID, t_arg *arg);
 
+// Dá free em um Datagram que não será mais utilizado
 void destroyDatagram(Datagram data);
+
+// Dá free na estrutura de um pacote que não será mais utilizado
+// :: implica em destroyDatagram
 void destroyPacket(Packet R);
 
-void waitConfirmation(t_arg *arg);
-
-void sendConfirmationMessage(t_arg *arg);
-
+// Adiciona um pacote na fila para ser transmitido
+// Pode ser uma mensagem, uma confirmação ou um encaminhamento
+// A prioridade é a ordem de chegada na fila
 void queuePacket(Packet packet);
 
+// Thread que processa a fila de transmissão de envio
+// de pacotes pendentes. Prioriza os pacotes (Packet) que
+// foram adicionados por primeiro na fila.
+// Essa thread bloqueia por TRANSM_USLEEP_TIME usec
+// e quando executa processa toda a fila, em ordem
+// de chegada dos pacotes
 int transmissionControl();
 
+// Marca um pacote como entregue quando receber uma
+// mensagem de confirmação de entrega.
+// As confirmações são sempre de pacote em pacote.
+// (TODO: Implementar confirmação em lote)
 void confirmDelivery(int destID, short unsigned int ID);
 
+// Destrói a fila de transmissões pendentes
+// É utilizado quando o usuário decide desligar o roteador
+// informando o destino UI_CLOSE
 void destroyGlobalQueue();
 
+// Imprime a fila de transmissões pendentes e suas propriedades
 void printFila();
