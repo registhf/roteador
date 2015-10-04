@@ -41,7 +41,6 @@ int main(int argc, char const *argv[]) {
 		exit(1);
 	}
 
-
 	// Atualiza parent e dist do grafo baseado nas configurações de enlace
 	// carregadas para o grafo G.
 	GraphSPT(G, getGraphNode(G, ROUTER_ID), G->parent, G->dist);
@@ -65,7 +64,6 @@ int main(int argc, char const *argv[]) {
 	free(arg);
 	destroyGraph(G);
 	destroyRouterList(R);
-	//printFila();
 	destroyGlobalQueue();
 	printf("Ok!\n");
 	return 0;
