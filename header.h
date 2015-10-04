@@ -135,7 +135,7 @@ extern Queue 			  TRANSMIT_QUEUE;
 
 
 
-void readArgs(int argc, char const *argv[]);
+void parseArgs(int argc, char const *argv[]);
 
 /*
  * Lê as configurações dos roteadores no arquivo roteador.config.

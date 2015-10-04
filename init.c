@@ -21,7 +21,7 @@ int main(int argc, char const *argv[]) {
 	pthread_t L[3];
 	t_arg *arg = malloc(sizeof(t_arg));
 
-	readArgs(argc, argv);
+	parseArgs(argc, argv);
 	printf("Carregando configuração do roteador #%d...\n", ROUTER_ID);
 
 	// Carrega para a lista r as configurações dos roteadores lendo

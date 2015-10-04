@@ -35,7 +35,7 @@ struct arguments {
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
 
-void readArgs(int argc, char const *argv[]) {
+void parseArgs(int argc, char const *argv[]) {
 	struct arguments arguments;
 
 	/* Default values. */
