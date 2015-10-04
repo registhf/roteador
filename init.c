@@ -54,17 +54,22 @@ int main(int argc, char const *argv[]) {
 	pthread_create(&L[1], NULL, (void *)userInterface, (void *)arg);
 	pthread_create(&L[2], NULL, (void *)transmissionControl, NULL);
 
+	// Retorna quando o usuário informar UI_CLOSE(-1) como destino
 	pthread_join(L[1], NULL);
 
+	// Força o fechamento das demais threads
 	pthread_cancel(L[0]);
 	pthread_cancel(L[2]);
 	pthread_join(L[0], NULL);
 	pthread_join(L[2], NULL);
 
+	// Limpa as estruturas utilizadas
 	free(arg);
 	destroyGraph(G);
 	destroyRouterList(R);
 	destroyGlobalQueue();
+
+	// Feito!
 	printf("Ok!\n");
 	return 0;
 }
