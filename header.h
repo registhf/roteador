@@ -59,8 +59,8 @@
 #define UI_CLOSE 		-1	// Usuário solicitou o desligamento do roteador
 #define UI_NO_DEST 		-2	// Usuário não definiu um destino para a mensagem
 
+// Cores e formatação das mensagens
 #define RESET		"\033[0m"			/* Texto normal */
-#define RESETBOLD	"\033[22m"
 #define BLACK		"\033[30m"
 #define RED			"\033[31m"
 #define GREEN		"\033[32m"
@@ -77,11 +77,16 @@
 #define BOLDMAGENTA	"\033[1m\033[35m"
 #define BOLDCYAN	"\033[1m\033[36m"
 #define BOLDWHITE	"\033[1m\033[37m"
-#define UNDERLINE   "\033[4m"
-#define BOLD   		"\033[1m"
-#define ITALIC   	"\033[3m"
-#define BLINK   	"\033[5m"
-#define INVERSE   	"\033[7m"
+#define UNDERLINE	"\033[4m"
+#define RESETULINE	"\033[24m"
+#define BOLD		"\033[1m"
+#define RESETBOLD	"\033[22m"
+#define ITALIC		"\033[3m"
+#define BLINK		"\033[5m"
+#define INVERSE		"\033[7m"
+#define INFO		BOLDBLUE 	"INFO: " RESETBOLD
+#define ERROR		BOLDRED 	"ERROR: " RESETBOLD
+#define WARNING		BOLDYELLOW 	"WARNING: " RESETBOLD
 
 
 /************************************
@@ -101,6 +106,10 @@
 // Número máximo de tentativas de entregar uma mensagem
 // Após isso um erro é gerado e a mensagem é descartada
 #define DF_TRANSM_MAX_ATTEMPTS 	3
+
+// Tempo de espera em microssegundos entre o envio de uma
+// mensagem e outra
+#define DF_INTERFRAME_DELAY		100
 
 
 
@@ -211,11 +220,14 @@ typedef struct control_queue *Queue;
 /*****************************************
  * VARIÁVEIS GLOBAIS
  ************************/
-extern unsigned int		  ROUTER_ID;			// ID do roteador definido por argumento --ID=1
-extern short unsigned int LAST_SENT_DGRAM_ID;	// ID do último datagrama enviado
-extern unsigned int 	  INTERFACE_DEST;		// Destino definido pelo usuário para envio da mensagem
-extern size_t 			  OUT_BUFF_LEN;			// Tamanho do buffer de saída do socket
-extern Queue 			  TRANSMIT_QUEUE;		// Fila de transmissão de pacotes
+extern unsigned long		TR_SUCCESS; 		// Número de mensagens transmitidas com sucesso
+extern unsigned long		TR_ERROR;			// Número de mensagens não enviadas
+extern unsigned long		TR_WARNING;			// Número de mensagens enviadas após retentativas
+extern unsigned int			ROUTER_ID;			// ID do roteador definido por argumento --ID=1
+extern short unsigned int	LAST_SENT_DGRAM_ID;	// ID do último datagrama enviado
+extern unsigned int			INTERFACE_DEST;		// Destino definido pelo usuário para envio da mensagem
+extern size_t				OUT_BUFF_LEN;		// Tamanho do buffer de saída do socket
+extern Queue				TRANSMIT_QUEUE;		// Fila de transmissão de pacotes
 
 
 
@@ -239,7 +251,9 @@ extern unsigned int TRANSM_TIMEOUT;
 extern unsigned int TRANSM_MAX_ATTEMPTS;
 
 
-
+// Tempo de espera em microssegundos entre o envio de uma
+// mensagem e outra
+extern unsigned int INTERFRAME_DELAY;
 
 /********************************************
  * FUNÇÕES GLOBAIS
@@ -280,6 +294,18 @@ Router getRouter(Router r, int ID);
 void destroyRouterList(Router r);
 
 
+// Retorna o Timestamp do dia e hora atual em milisegundos
+long getMillisecondsOfDay();
+
+
+// Retorna uma string com a hora no formato %H:%M:%S.%MS
+char *getTimeStr();
+
+
+// Imprime a hora (inline) retornada por getTimeStr(), dá free na string retornada.
+void printTime();
+
+
 // Inicializa a interface do usuário para receber
 // os comandos para envio de mensagem
 void userInterface(t_arg *arg);
@@ -287,6 +313,7 @@ void userInterface(t_arg *arg);
 
 // Envia uma mensagem do usuário para o destino especificado
 void sendMessage(int dest, char *message, t_arg *arg);
+
 
 
 /****************************
@@ -317,7 +344,6 @@ void 	GraphSPT(Graph G, int s, int parent[], int dist[]);
 
 // Destrói o grafo
 void 	destroyGraph(Graph G);
-
 
 
 
@@ -396,12 +422,3 @@ void destroyGlobalQueue();
 
 // Imprime a fila de transmissões pendentes e suas propriedades
 void printFila();
-
-// Retorna o Timestamp do dia e hora atual em milisegundos
-long getMillisecondsOfDay();
-
-// Retorna uma string com a hora no formato %H:%M:%S.%MS
-char *getTimeStr();
-
-// Imprime a hora (inline) retornada por getTimeStr(), dá free na string retornada.
-void printTime();

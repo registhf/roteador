@@ -39,7 +39,7 @@ Graph readLinkConfig() {
 	}
 
 	if (ferror(config)) {
-		printf("Erro na leitura do arquivo de configuração de enlaces.\n");
+		printf(ERROR "Erro na leitura do arquivo de configuração de enlaces." RESET "\n");
 		fclose(config);
 		return NULL;
 	}

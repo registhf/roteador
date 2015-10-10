@@ -19,12 +19,12 @@ int transmissionControl() {
 	int s;
 
 	printTime();
-	printf("Fila de transmissão iniciada!\n");
+	printf(INFO "Fila de transmissão iniciada! " RESET "\n");
 	initQueue();
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
 		printTime();
-		printf("ERROR: Não foi possível criar o socket. Controle de transmissão não iniciado.\n");
+		printf(ERROR "Não foi possível criar o socket. Controle de transmissão não iniciado." RESET "\n");
 		return -1;
 	}
 
@@ -43,7 +43,10 @@ int transmissionControl() {
 
 			if (p->delivered == 1) {
 				printTime();
-				printf(BOLDBLUE "INFO:" RESETBOLD " Mensagem " BOLD "#%d" RESETBOLD " enviada para " BOLD "%d" RESETBOLD " com sucesso!" RESET "\n", p->data->ID, p->data->destID);
+				printf(INFO  " Mensagem " BOLD "#%d" RESETBOLD " enviada para " BOLD "%d" RESETBOLD " com sucesso!" RESET "\n", p->data->ID, p->data->destID);
+				TR_SUCCESS++;
+				if (p->attempts > 1)
+					TR_WARNING++;
 
 				dequeuePacket(p);
 			} else if (p->type == TP_FORWARD || p->type == TP_CONFIRM) {
@@ -57,19 +60,21 @@ int transmissionControl() {
 
 				p->attempts++;
 				printTime();
-				printf(BOLDBLUE "INFO:" RESETBOLD " Enviando mensagem " BOLD "#%d" RESETBOLD " para roteador " BOLD "%d" RESETBOLD". (" BOLD "%s:%d" RESET ")\n", p->data->ID, p->data->destID, p->IP, p->port);
+				printf(INFO  " Enviando mensagem " BOLD "#%d" RESETBOLD " para roteador " BOLD "%d" RESETBOLD". (" BOLD "%s:%d" RESET ")\n", p->data->ID, p->data->destID, p->IP, p->port);
 			} else if (p->attempts > 0) {
 				long elapsed = getMillisecondsOfDay() - p->timestamp;
 
 				if (p->attempts >= TRANSM_MAX_ATTEMPTS && elapsed > TRANSM_TIMEOUT) {
 					printTime();
-					printf(BOLDRED "ERROR: " RESETBOLD "Não foi possível enviar a mensagem " BOLD "#%d" RESETBOLD " ao roteador " BOLD "%d" RESETBOLD "." RESET "\n", p->data->ID, p->data->destID);
+					printf(ERROR "Não foi possível enviar a mensagem " BOLD "#%d" RESETBOLD " ao roteador " BOLD "%d" RESETBOLD "." RESET "\n", p->data->ID, p->data->destID);
+					TR_ERROR++;
 
 					dequeuePacket(p);
 				} else {
 					if (elapsed > TRANSM_TIMEOUT) {
 						printTime();
-						printf(BOLDYELLOW "WARNING:" RESETBOLD " Tentando enviar a mensagem " BOLD "#%d" RESETBOLD " para o roteador " BOLD "%d" RESETBOLD " pela " BOLD "%dª" RESETBOLD " vez." RESET "\n", p->data->ID, p->data->destID, p->attempts+1);
+						printf(WARNING " Tentando enviar a mensagem " BOLD "#%d" RESETBOLD " para o roteador " BOLD "%d" RESETBOLD " pela " BOLD "%dª" RESETBOLD " vez." RESET "\n", p->data->ID, p->data->destID, p->attempts+1);
+
 						sendTo(&si_other, p, s);
 
 						p->timestamp = getMillisecondsOfDay();
@@ -90,6 +95,8 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s) {
 	size_t slen = sizeof(*si_other);
 	si_other->sin_port = htons(p->port);
 
+	usleep(INTERFRAME_DELAY);
+
 	if (inet_aton(p->IP , &si_other->sin_addr) == 0) {
 		printTime();
 		fprintf(stderr, "inet_aton() failed\n");
@@ -100,7 +107,7 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s) {
 
 	if (sendto(s, serial_data, OUT_BUFF_LEN, 0, (struct sockaddr *)si_other, slen) == -1) {
 		printTime();
-		printf("ERROR: Não foi possível enviar...\n");
+		printf(ERROR "Não foi possível enviar..." RESET "\n");
 	}
 
 	free(serial_data);

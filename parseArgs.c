@@ -19,6 +19,7 @@ static struct argp_option options[] = {
   {"timeout",	't', "Tempo em ms",				OPTION_NO_USAGE, "Tempo máximo de espera por resposta em uma tentativa" },
   {"retries",	'r', "Número de tentativas",	OPTION_NO_USAGE, "Número máximo de tentativas de envio de uma mensagem" },
   {"sleep",		's', "Tempo em ms",				OPTION_NO_USAGE, "Tempo de espera para processar a fila de transmissão" },
+  {"ifdelay",	'd', "Tempo em us",				OPTION_NO_USAGE, "Tempo entre o envio de uma frame e outra na transmissão" },
   {0}
 };
 
@@ -26,10 +27,11 @@ static struct argp_option options[] = {
 struct arguments {
 	char *arg1;
 	char **strings;
-	int ID;
-	int timeout;
-	int retries;
-	int sleep;
+	unsigned int ID;
+	unsigned int timeout;
+	unsigned int retries;
+	unsigned int sleep;
+	unsigned int ifdelay;
 };
 
 static struct argp argp = { options, parse_opt, args_doc, doc };
@@ -43,6 +45,7 @@ void parseArgs(int argc, char const *argv[]) {
 	arguments.timeout 	= DF_TRANSM_TIMEOUT;
 	arguments.retries 	= DF_TRANSM_MAX_ATTEMPTS;
 	arguments.sleep 	= DF_TRANSM_USLEEP_TIME;
+	arguments.ifdelay	= DF_INTERFRAME_DELAY;
 
 	argp_parse(&argp, argc, (void *)argv, 0, 0, &arguments);
 
@@ -50,6 +53,7 @@ void parseArgs(int argc, char const *argv[]) {
 	TRANSM_TIMEOUT 		= arguments.timeout;
 	TRANSM_MAX_ATTEMPTS = arguments.retries;
 	TRANSM_USLEEP_TIME 	= arguments.sleep;
+	INTERFRAME_DELAY 	= arguments.ifdelay;
 
 	//printf("ID: %d, timeout: %d, retries: %d, sleep: %d\n", ROUTER_ID, TRANSM_TIMEOUT, TRANSM_MAX_ATTEMPTS, TRANSM_USLEEP_TIME);
 }
@@ -73,10 +77,13 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		case 's':
 			arguments->sleep = arg ? atoi(arg)*1000 : DF_TRANSM_USLEEP_TIME;
 			break;
+		case 'd':
+			arguments->ifdelay = arg ? atoi(arg)*1000 : DF_INTERFRAME_DELAY;
+			break;
 
 		case ARGP_KEY_END:
 			if (!hasID) {
-				printf("O ID do roteador é obrigatório (--ID=Num)\n");
+				printf(ERROR "O " BOLD "ID" RESETBOLD " do roteador é " BOLD UNDERLINE "obrigatório" RESETBOLD RESETULINE " (--ID=Num)" RESET "\n");
 				argp_usage(state);
 			}
 			break;

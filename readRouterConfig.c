@@ -24,7 +24,7 @@ Router readRouterConfig() {
 	}
 
 	if (ferror(config)) {
-		printf("Erro na leitura do arquivo de configuração dos roteadores.\n");
+		printf(ERROR "Erro na leitura do arquivo de configuração dos roteadores." RESET "\n");
 		fclose(config);
 		return NULL;
 	}

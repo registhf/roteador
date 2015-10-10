@@ -16,34 +16,43 @@ void userInterface(t_arg *arg) {
 	char destStr[MAX_LEN_INPUT_DEST];
 	INTERFACE_DEST = UI_NO_DEST;
 
-	printf(BOLDWHITE "\nParâmetros carregados:\n" RESET);
+	printf(BOLD "\nParâmetros carregados:\n" RESET);
 	printf(" Timeout: \t\t" GREEN "%d \tms\n" RESET, TRANSM_TIMEOUT);
 	printf(" Tempo de espera: \t" GREEN "%d \tms\n" RESET, TRANSM_USLEEP_TIME),
-	printf(" Tentativas de envio: \t" GREEN "%d\n\n" RESET, TRANSM_MAX_ATTEMPTS);
+	printf(" Tentativas de envio: \t" GREEN "%d\n" RESET, TRANSM_MAX_ATTEMPTS);
+	printf("Execute: " BOLD "./Router --help" RESET " para instruções de como alterar.\n\n");
 
-	usleep(500000);
-	printf(BOLDWHITE "\nInstruções: \n" RESET);
-	printf("--> Informe o " BOLDWHITE "ID" RESET " do destino, depois a mensagem. (Com " INVERSE " enter " RESET ")\n");
-	printf("--> Informe " BOLDWHITE "%d" RESET " para sair\n\n", UI_CLOSE);
+	printf(BOLD "\nInstruções: \n" RESET);
+	printf("--> Informe o " BOLD "ID" RESET " do destino, depois a " BOLD "mensagem" RESET ". (Separados por " INVERSE " enter " RESET ")\n");
+	printf("--> Para " BOLD "sair" RESET " informe " BOLD "%d" RESET " como destino\n\n", UI_CLOSE);
 
 	while(1) {
 		INTERFACE_DEST = UI_NO_DEST;
 
-		printf("#> ");
+		printf("\r#> ");
 
 		if (!fgets(destStr, MAX_LEN_INPUT_DEST, stdin))
 			continue;
 
 		if (!isNumber(destStr)) {
 			if (strlen(destStr) > 1)
-				printf(BOLDWHITE "Destino inválido," RESET " verifique.\n");
+				printf(WARNING BOLD "Destino inválido," RESETBOLD " verifique.\n");
 			continue;
 		}
 
 		INTERFACE_DEST = atoi(destStr);
 
 		if (INTERFACE_DEST == UI_CLOSE) {
-			printf("\n\n" YELLOW "Desligando... " RESET);
+			if (TR_SUCCESS+TR_ERROR > 0) {
+				printf(BOLD "\nNúmero total de mensagens:\t " GREEN "%ld" RESET "\n", TR_SUCCESS + TR_ERROR);
+				printf(BOLDGREEN "    Enviadas com sucesso:\t " RESETBOLD "%ld" RESET, TR_SUCCESS);
+				printf(" | " BOLDYELLOW "Após nova tentativa: " RESETBOLD "%ld", TR_WARNING);
+				printf(" (%.1lf%%)\n", (double)100*TR_WARNING/(double)TR_SUCCESS);
+				printf(BOLDRED "    Erro no envio:\t\t " RESETBOLD "%ld" RESET "\n\n", TR_ERROR);
+				printf(BOLD "Eficiência:\t\t\t %.1lf%%" RESET "\n\n", (double)100*TR_SUCCESS/(double)(TR_ERROR+TR_SUCCESS));
+			}
+
+			printf(INFO "Desligando... " RESET);
 			return;
 		}
 
@@ -107,6 +116,8 @@ static void fixMessageInput(char *message) {
 static void storm(int dest, t_arg *arg) {
 	int i;
 
-	for (i = 0; i < 15; i++)
-		sendMessage(dest, "DIE!", arg);
+	for (i = 0; i < 32000; i++)
+		sendMessage(dest, "NA", arg);
+	usleep(100000); // espera 100ms
+	sendMessage(dest, "BATMAN!", arg);
 }
