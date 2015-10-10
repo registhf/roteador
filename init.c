@@ -22,14 +22,14 @@ int main(int argc, char const *argv[]) {
 	t_arg *arg = malloc(sizeof(t_arg));
 
 	parseArgs(argc, argv);
-	printf("Carregando configuração do roteador #%d...\n", ROUTER_ID);
+	printf(BOLDWHITE "Carregando configuração do roteador #" UNDERLINE "%d" RESET BOLDWHITE "...\n" RESET, ROUTER_ID);
 
 	// Carrega para a lista r as configurações dos roteadores lendo
 	// os dados do arquivo roteador.config
 	R = readRouterConfig();
 	if (getRouter(R, ROUTER_ID) == NULL) {
-		printf("ERRO: ID definida para o roteador não está configurada!\n");
-		printf("\nDigite: ./Router --help, caso precise de ajuda\n");
+		printf(BOLDRED "ERROR:" RESETBOLD " ID definida para o roteador não está configurada!" RESET "\n");
+		printf("\nDigite: " BOLDWHITE "./Router --help" RESET ", caso precise de ajuda.\n\n");
 		exit(1);
 	}
 
@@ -37,7 +37,7 @@ int main(int argc, char const *argv[]) {
 	// os dados do arquivo enlaces.config
 	G = readLinkConfig();
 	if (getGraphNode(G, ROUTER_ID) == -1) {
-		printf("ERRO: Verifique a configuração de enlaces! Roteador offline.\n");
+		printf("ERROR: Verifique a configuração de enlaces! Roteador offline.\n");
 		exit(1);
 	}
 
@@ -70,6 +70,6 @@ int main(int argc, char const *argv[]) {
 	destroyGlobalQueue();
 
 	// Feito!
-	printf("Ok!\n");
+	printf(BOLDWHITE "Ok!\n" RESET);
 	return 0;
 }

@@ -16,12 +16,15 @@ void userInterface(t_arg *arg) {
 	char destStr[MAX_LEN_INPUT_DEST];
 	INTERFACE_DEST = UI_NO_DEST;
 
-	printf("\nParâmetros carregados:\n Timeout: %d ms\n", TRANSM_TIMEOUT);
-	printf(" Número máximo de tentativas de envio: %d\n", TRANSM_MAX_ATTEMPTS);
-	printf(" Tempo de espera: %d ms\n\n", TRANSM_USLEEP_TIME),
+	printf(BOLDWHITE "\nParâmetros carregados:\n" RESET);
+	printf(" Timeout: \t\t" GREEN "%d \tms\n" RESET, TRANSM_TIMEOUT);
+	printf(" Tempo de espera: \t" GREEN "%d \tms\n" RESET, TRANSM_USLEEP_TIME),
+	printf(" Tentativas de envio: \t" GREEN "%d\n\n" RESET, TRANSM_MAX_ATTEMPTS);
 
 	usleep(500000);
-	printf("\n--> Informe o ID do destino, depois a mensagem. (Com <enter>)\n--> Informe %d para sair\n\n", UI_CLOSE);
+	printf(BOLDWHITE "\nInstruções: \n" RESET);
+	printf("--> Informe o " BOLDWHITE "ID" RESET " do destino, depois a mensagem. (Com " INVERSE " enter " RESET ")\n");
+	printf("--> Informe " BOLDWHITE "%d" RESET " para sair\n\n", UI_CLOSE);
 
 	while(1) {
 		INTERFACE_DEST = UI_NO_DEST;
@@ -33,18 +36,18 @@ void userInterface(t_arg *arg) {
 
 		if (!isNumber(destStr)) {
 			if (strlen(destStr) > 1)
-				printf("Destino inválido, verifique.\n");
+				printf(BOLDWHITE "Destino inválido," RESET " verifique.\n");
 			continue;
 		}
 
 		INTERFACE_DEST = atoi(destStr);
 
 		if (INTERFACE_DEST == UI_CLOSE) {
-			printf("Desligando...\n");
+			printf("\n\n" YELLOW "Desligando... " RESET);
 			return;
 		}
 
-		printf("%d> ", INTERFACE_DEST);
+		printf(BOLDGREEN "%d> " RESET, INTERFACE_DEST);
 
 		// Caracteres acentuados ocupam duas posições, deixei o fgets aceitando
 		// até cinco vezes o máximo, mas trato o limite em fixMessageInput daí.

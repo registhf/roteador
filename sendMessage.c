@@ -27,7 +27,7 @@ static Datagram createDatagram(int dest, char *message, Router R) {
 	Router destR 	= getRouter(R, dest);
 
 	if (!destR || !src) {
-		printf("ERRO: Configuração do roteador não encontrada.\n");
+		printf(BOLDRED "ERROR:" RESETBOLD " Configuração do roteador não encontrada. Impossível enviar a mensagem." RESET "\n");
 		return NULL;
 	}
 

@@ -24,7 +24,7 @@ int transmissionControl() {
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
 		printTime();
-		printf("ERRO: Não foi possível criar o socket. Controle de transmissão não iniciado.\n");
+		printf("ERROR: Não foi possível criar o socket. Controle de transmissão não iniciado.\n");
 		return -1;
 	}
 
@@ -43,7 +43,7 @@ int transmissionControl() {
 
 			if (p->delivered == 1) {
 				printTime();
-				printf("Mensagem #%d enviada para %d com sucesso!\n", p->data->ID, p->data->destID);
+				printf(BOLDBLUE "INFO:" RESETBOLD " Mensagem " BOLD "#%d" RESETBOLD " enviada para " BOLD "%d" RESETBOLD " com sucesso!" RESET "\n", p->data->ID, p->data->destID);
 
 				dequeuePacket(p);
 			} else if (p->type == TP_FORWARD || p->type == TP_CONFIRM) {
@@ -57,19 +57,19 @@ int transmissionControl() {
 
 				p->attempts++;
 				printTime();
-				printf("Enviando mensagem #%d para roteador %d.\n", p->data->ID, p->data->destID);
+				printf(BOLDBLUE "INFO:" RESETBOLD " Enviando mensagem " BOLD "#%d" RESETBOLD " para roteador " BOLD "%d" RESETBOLD". (" BOLD "%s:%d" RESET ")\n", p->data->ID, p->data->destID, p->IP, p->port);
 			} else if (p->attempts > 0) {
 				long elapsed = getMillisecondsOfDay() - p->timestamp;
 
 				if (p->attempts >= TRANSM_MAX_ATTEMPTS && elapsed > TRANSM_TIMEOUT) {
 					printTime();
-					printf("Não foi possível enviar a mensagem #%d ao roteador %d.\n", p->data->ID, p->data->destID);
+					printf(BOLDRED "ERROR: " RESETBOLD "Não foi possível enviar a mensagem " BOLD "#%d" RESETBOLD " ao roteador " BOLD "%d" RESETBOLD "." RESET "\n", p->data->ID, p->data->destID);
 
 					dequeuePacket(p);
 				} else {
 					if (elapsed > TRANSM_TIMEOUT) {
 						printTime();
-						printf("Tentando enviar o pacote #%d para o roteador %d pela %dª vez.\n", p->data->ID, p->data->destID, p->attempts+1);
+						printf(BOLDYELLOW "WARNING:" RESETBOLD " Tentando enviar a mensagem " BOLD "#%d" RESETBOLD " para o roteador " BOLD "%d" RESETBOLD " pela " BOLD "%dª" RESETBOLD " vez." RESET "\n", p->data->ID, p->data->destID, p->attempts+1);
 						sendTo(&si_other, p, s);
 
 						p->timestamp = getMillisecondsOfDay();
@@ -100,7 +100,7 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s) {
 
 	if (sendto(s, serial_data, OUT_BUFF_LEN, 0, (struct sockaddr *)si_other, slen) == -1) {
 		printTime();
-		printf("ERRO: Não foi possível enviar...\n");
+		printf("ERROR: Não foi possível enviar...\n");
 	}
 
 	free(serial_data);

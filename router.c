@@ -28,7 +28,7 @@ Packet findOutputRoute(Graph G, Router R, Datagram data) {
 
 	graphNode = getGraphNode(G, data->destID);
 	if (graphNode < 0) {
-		printf("ERRO: O destino %d está fora da topologia desta rede.\n", data->destID);
+		printf(BOLDRED "ERROR:" RESETBOLD " O destino " BOLD "%d" RESETBOLD" está fora da topologia desta rede." RESET "\n", data->destID);
 		return 0;
 	}
 
@@ -38,7 +38,7 @@ Packet findOutputRoute(Graph G, Router R, Datagram data) {
 
 	destRouter = getRouter(R, destParent);
 	if (!destRouter) {
-		printf("ERRO: Configuração do roteador não encontrada.\n");
+		printf(BOLDRED "ERROR:" RESETBOLD " Configuração do roteador " BOLD "%d" RESETBOLD" não encontrada. Impossível encontrar uma rota de saída." RESET "\n", data->destID);
 		return NULL;
 	}
 

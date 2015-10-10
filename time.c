@@ -38,7 +38,7 @@ char *getTimeStr() {
 void printTime() {
 	char *aux = getTimeStr();
 
-	printf("\r%s: ", aux);
+	printf("\r" BOLDWHITE "%s:\033[0m " RESET, aux);
 
 	free(aux);
 }

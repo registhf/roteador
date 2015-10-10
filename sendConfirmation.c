@@ -29,7 +29,7 @@ static Datagram createConfirmData(int dest, Router R) {
 	Router destR 	= getRouter(R, dest);
 
 	if (!destR || !src) {
-		printf("ERRO: Configuração do roteador não encontrada.\n");
+		printf(BOLDRED "ERROR:" RESETBOLD " Configuração do roteador não encontrada. Impossível enviar a confirmação." RESET "\n");
 		return NULL;
 	}
 
