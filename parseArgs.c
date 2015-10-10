@@ -78,7 +78,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 			arguments->sleep = arg ? atoi(arg)*1000 : DF_TRANSM_USLEEP_TIME;
 			break;
 		case 'd':
-			arguments->ifdelay = arg ? atoi(arg)*1000 : DF_INTERFRAME_DELAY;
+			arguments->ifdelay = arg ? atoi(arg) : DF_INTERFRAME_DELAY;
 			break;
 
 		case ARGP_KEY_END:

@@ -89,6 +89,8 @@
 #define WARNING		BOLDYELLOW 	"WARNING: " RESETBOLD
 
 
+
+
 /************************************
  * VALOR PADRÃO DOS PARÂMETROS
  * Utilizados caso o usuário não informe como argumento do programa
@@ -109,7 +111,7 @@
 
 // Tempo de espera em microssegundos entre o envio de uma
 // mensagem e outra
-#define DF_INTERFRAME_DELAY		100
+#define DF_INTERFRAME_DELAY		175 // = 0.175ms
 
 
 

@@ -60,7 +60,7 @@ int transmissionControl() {
 
 				p->attempts++;
 				printTime();
-				printf(INFO  " Enviando mensagem " BOLD "#%d" RESETBOLD " para roteador " BOLD "%d" RESETBOLD". (" BOLD "%s:%d" RESET ")\n", p->data->ID, p->data->destID, p->IP, p->port);
+				printf(INFO  " Enviando mensagem " BOLD "#%d" RESETBOLD " para roteador " BOLD "%d" RESETBOLD". (" BOLD "%s:%d" RESETBOLD ")" RESET "\n", p->data->ID, p->data->destID, p->IP, p->port);
 			} else if (p->attempts > 0) {
 				long elapsed = getMillisecondsOfDay() - p->timestamp;
 
