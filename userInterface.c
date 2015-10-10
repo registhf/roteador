@@ -15,6 +15,11 @@ void userInterface(t_arg *arg) {
 	char message[(MAX_LEN_MESSAGE*5)+1];
 	char destStr[MAX_LEN_INPUT_DEST];
 	INTERFACE_DEST = UI_NO_DEST;
+
+	printf("\nParâmetros carregados:\n Timeout: %d ms\n", TRANSM_TIMEOUT);
+	printf(" Número máximo de tentativas de envio: %d\n", TRANSM_MAX_ATTEMPTS);
+	printf(" Tempo de espera: %d ms\n\n", TRANSM_USLEEP_TIME),
+
 	usleep(500000);
 	printf("\n--> Informe o ID do destino, depois a mensagem. (Com <enter>)\n--> Informe %d para sair\n\n", UI_CLOSE);
 
@@ -79,7 +84,6 @@ static void fixMessageInput(char *message) {
 
 	for (i = 0; i < max; i++) {
 		if ((int)message[i] < 0) {
-			printf("%d\n", (int)message[i]);
 			if (c) {
 				max++;
 				c = 0;

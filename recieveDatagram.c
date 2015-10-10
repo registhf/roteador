@@ -18,11 +18,13 @@ void recieveDatagram(t_arg *arg) {
 	printf("Criando socket do roteador...\n");
 	Router host = getRouter(arg->R, ROUTER_ID);
 	if (!host) {
+		printTime();
 		printf("ERRO: Configuração do roteador não encontrada. Impossível inicializar.\n");
 		exit(1);
 	}
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
+		printTime();
 		printf("ERRO: Falha no socket().\n");
 		exit(1);
 	}
@@ -34,6 +36,7 @@ void recieveDatagram(t_arg *arg) {
 	si_me.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	if (bind(s , (struct sockaddr*)&si_me, sizeof(si_me)) == -1) {
+		printTime();
 		printf("ERRO: Falha no bind(). Verifique se a porta não está sendo utilizada.\n");
 		exit(1);
 	}
@@ -45,7 +48,8 @@ void recieveDatagram(t_arg *arg) {
 		memset(buffer,'\0', INCOMING_BUFLEN);
 
 		if ((recv_len = recvfrom(s, buffer, INCOMING_BUFLEN, 0, (struct sockaddr *)&si_other, &slen)) == -1) {
-			printf("recvfrom()");
+			printTime();
+			printf("Falha no recvfrom()");
 			exit(1);
 		}
 
@@ -64,6 +68,7 @@ void recieveDatagram(t_arg *arg) {
 static void forwardDatagram(t_arg *arg) {
 	Packet p;
 
+	printTime();
 	printf("Roteador %d: Encaminhando mensagem #%d de %d para %d. (%d bytes)\n",
 			ROUTER_ID, arg->data->ID, arg->data->srcID, arg->data->destID, arg->recv_len);
 	arg->data->TTL--;
@@ -76,7 +81,8 @@ static void forwardDatagram(t_arg *arg) {
 
 static void processDatagram(t_arg *arg) {
 	if (arg->data->type == TM_MESSAGE) {
-		printf("\nMensagem #%d do roteador %d: \"", arg->data->ID, arg->data->srcID);
+		printTime();
+		printf("Mensagem #%d do roteador %d: \"", arg->data->ID, arg->data->srcID);
 		printf("%s\"\n", arg->data->message);
 
 		sendConfirmation(arg->data->srcID, arg->data->ID, arg);

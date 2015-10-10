@@ -373,3 +373,11 @@ void destroyGlobalQueue();
 // Imprime a fila de transmissões pendentes e suas propriedades
 void printFila();
 
+// Retorna o Timestamp do dia e hora atual em milisegundos
+long getMillisecondsOfDay();
+
+// Retorna uma string com a hora no formato %H:%M:%S.%MS
+char *getTimeStr();
+
+// Imprime a hora (inline) retornada por getTimeStr(), dá free na string retornada.
+void printTime();

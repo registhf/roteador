@@ -5,8 +5,6 @@
 #include <sys/socket.h>
 #include <pthread.h>
 #include <unistd.h>
-#include <sys/time.h>
-#include <time.h>
 #include "header.h"
 
 Queue TRANSMIT_QUEUE;
@@ -14,17 +12,18 @@ Queue TRANSMIT_QUEUE;
 static void initQueue();
 static void dequeuePacket(Packet packet);
 static void sendTo(struct sockaddr_in *si_other, Packet p, int s);
-static long getMillisecondsOfDay();
 
 int transmissionControl() {
 	Packet p, tmp;
 	struct sockaddr_in si_other;
 	int s;
 
+	printTime();
 	printf("Fila de transmissão iniciada!\n");
 	initQueue();
 
 	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
+		printTime();
 		printf("ERRO: Não foi possível criar o socket. Controle de transmissão não iniciado.\n");
 		return -1;
 	}
@@ -43,6 +42,7 @@ int transmissionControl() {
 			tmp = p->next;
 
 			if (p->delivered == 1) {
+				printTime();
 				printf("Mensagem #%d enviada para %d com sucesso!\n", p->data->ID, p->data->destID);
 
 				dequeuePacket(p);
@@ -56,16 +56,19 @@ int transmissionControl() {
 				p->timestamp = getMillisecondsOfDay();
 
 				p->attempts++;
+				printTime();
 				printf("Enviando mensagem #%d para roteador %d.\n", p->data->ID, p->data->destID);
 			} else if (p->attempts > 0) {
 				long elapsed = getMillisecondsOfDay() - p->timestamp;
 
 				if (p->attempts >= TRANSM_MAX_ATTEMPTS && elapsed > TRANSM_TIMEOUT) {
+					printTime();
 					printf("Não foi possível enviar a mensagem #%d ao roteador %d.\n", p->data->ID, p->data->destID);
 
 					dequeuePacket(p);
 				} else {
 					if (elapsed > TRANSM_TIMEOUT) {
+						printTime();
 						printf("Tentando enviar o pacote #%d para o roteador %d pela %dª vez.\n", p->data->ID, p->data->destID, p->attempts+1);
 						sendTo(&si_other, p, s);
 
@@ -88,6 +91,7 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s) {
 	si_other->sin_port = htons(p->port);
 
 	if (inet_aton(p->IP , &si_other->sin_addr) == 0) {
+		printTime();
 		fprintf(stderr, "inet_aton() failed\n");
 		exit(1);
 	}
@@ -95,6 +99,7 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s) {
 	serial_data = packDatagram(p->data);
 
 	if (sendto(s, serial_data, OUT_BUFF_LEN, 0, (struct sockaddr *)si_other, slen) == -1) {
+		printTime();
 		printf("ERRO: Não foi possível enviar...\n");
 	}
 
@@ -157,17 +162,6 @@ static void initQueue() {
 	TRANSMIT_QUEUE->first = NULL;
 	pthread_mutex_init(&TRANSMIT_QUEUE->mutex, NULL);
 }
-
-static long getMillisecondsOfDay() {
-	struct timeval tim;
-	gettimeofday(&tim, NULL);
-
-	//printf("%lf | ", tim.tv_sec+(tim.tv_usec/1000000.0));
-	//printf("%lf | ", (tim.tv_sec+(tim.tv_usec/1000000.0)) * 1000);
-	//printf("%ld\n", (long)((tim.tv_sec+(tim.tv_usec/1000000.0)) * 1000));
-	return (long)((tim.tv_sec+(tim.tv_usec/1000000.0)) * 1000);
-}
-
 
 void printFila() {
 	Packet p;
