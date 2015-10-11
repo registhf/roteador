@@ -17,10 +17,10 @@ void userInterface(t_arg *arg) {
 	INTERFACE_DEST = UI_NO_DEST;
 
 	printf(BOLD "\nParâmetros carregados:\n" RESET);
-	printf(" Timeout: \t\t" GREEN "%d \tms\n" RESET, TRANSM_TIMEOUT);
-	printf(" Tempo de espera: \t" GREEN "%d \tms\n" RESET, TRANSM_USLEEP_TIME),
-	printf(" Tentativas de envio: \t" GREEN "%d\n" RESET, TRANSM_MAX_ATTEMPTS);
-	printf(" Espera entre envios: \t" GREEN "%d \tus\n" RESET, INTERFRAME_DELAY);
+	printf("    Timeout: \t\t\t" GREEN "%d \tms\n" RESET, TRANSM_TIMEOUT);
+	printf("    Tempo de espera: \t\t" GREEN "%d \tms\n" RESET, TRANSM_USLEEP_TIME),
+	printf("    Tentativas de envio: \t" GREEN "%d\n" RESET, TRANSM_MAX_ATTEMPTS);
+	printf("    Espera entre envios: \t" GREEN "%d \tus\n" RESET, INTERFRAME_DELAY);
 	printf("Execute: " BOLD "./Router --help" RESET " para instruções de como alterar.\n\n");
 
 	printf(BOLD "\nInstruções: \n" RESET);
@@ -53,7 +53,7 @@ void userInterface(t_arg *arg) {
 				printf(BOLD "Eficiência:\t\t\t %.1lf%%" RESET "\n\n", (double)100*TR_SUCCESS/(double)(TR_ERROR+TR_SUCCESS));
 			}
 
-			printf(INFO "Desligando... " RESET);
+			printf(BLUE "Desligando... " RESET);
 			return;
 		}
 
