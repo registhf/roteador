@@ -18,7 +18,7 @@ void userInterface(t_arg *arg) {
 
 	printf(BOLD "\nParâmetros carregados:\n" RESET);
 	printf("    Timeout: \t\t\t" GREEN "%d \tms\n" RESET, TRANSM_TIMEOUT);
-	printf("    Tempo de espera: \t\t" GREEN "%d \tms\n" RESET, TRANSM_USLEEP_TIME),
+	printf("    Tempo de espera: \t\t" GREEN "%d \tms\n" RESET, TRANSM_USLEEP_TIME/1000),
 	printf("    Tentativas de envio: \t" GREEN "%d\n" RESET, TRANSM_MAX_ATTEMPTS);
 	printf("    Espera entre envios: \t" GREEN "%d \tus\n" RESET, INTERFRAME_DELAY);
 	printf("Execute: " BOLD "./Router --help" RESET " para instruções de como alterar.\n\n");
@@ -44,13 +44,18 @@ void userInterface(t_arg *arg) {
 		INTERFACE_DEST = atoi(destStr);
 
 		if (INTERFACE_DEST == UI_CLOSE) {
-			if (TR_SUCCESS+TR_ERROR > 0) {
-				printf(BOLD "\nNúmero total de mensagens:\t " GREEN "%ld" RESET "\n", TR_SUCCESS + TR_ERROR);
+			if (TR_SUCCESS + TR_ERROR + TR_FORWARD + TR_RECIEVED > 0) {
+				printf(BOLD "\nNúmero total de mensagens recebidas:\t " GREEN "%ld" RESET "\n", TR_RECIEVED);
+				printf(BOLD "Número total de mensagens encaminhadas:\t " GREEN "%ld" RESET "\n", TR_FORWARD);
+				printf(BOLD "Número total de mensagens enviadas:\t " GREEN "%ld" RESET "\n", TR_SUCCESS + TR_ERROR);
 				printf(BOLDGREEN "    Enviadas com sucesso:\t " RESETBOLD "%ld" RESET, TR_SUCCESS);
 				printf(" | " BOLDYELLOW "Após nova tentativa: " RESETBOLD "%ld", TR_WARNING);
 				printf(" (%.1lf%%)\n", (double)100*TR_WARNING/(double)TR_SUCCESS);
 				printf(BOLDRED "    Erro no envio:\t\t " RESETBOLD "%ld" RESET "\n\n", TR_ERROR);
-				printf(BOLD "Eficiência:\t\t\t %.1lf%%" RESET "\n\n", (double)100*TR_SUCCESS/(double)(TR_ERROR+TR_SUCCESS));
+				if (TR_ERROR + TR_WARNING > 0)
+					printf(BOLD "Eficiência:\t\t\t %.1lf%%" RESET "\n\n", (double)100*TR_SUCCESS/(double)(TR_ERROR+TR_SUCCESS));
+				else
+					printf(BOLD "Eficiência:\t\t\t 100.0%%" RESET "\n\n");
 			}
 
 			printf(BLUE "Desligando... " RESET);

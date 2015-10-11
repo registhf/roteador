@@ -17,6 +17,8 @@ short unsigned int 	LAST_SENT_DGRAM_ID;
 unsigned long		TR_SUCCESS;
 unsigned long		TR_WARNING;
 unsigned long		TR_ERROR;
+unsigned long		TR_RECIEVED;
+unsigned long		TR_FORWARD;
 
 int main(int argc, char const *argv[]) {
 	Router R;
@@ -24,7 +26,7 @@ int main(int argc, char const *argv[]) {
 	pthread_t L[3];
 	t_arg *arg = malloc(sizeof(t_arg));
 
-	TR_ERROR = TR_WARNING = TR_SUCCESS = 0;
+	TR_FORWARD = TR_RECIEVED = TR_ERROR = TR_WARNING = TR_SUCCESS = 0;
 
 	parseArgs(argc, argv);
 	printf(BOLD "Carregando configuração do roteador " GREEN "#%d" WHITE "...\n\n" RESET, ROUTER_ID);

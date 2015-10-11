@@ -197,6 +197,8 @@ typedef struct control_queue *Queue;
 extern unsigned long		TR_SUCCESS; 		// Número de mensagens transmitidas com sucesso
 extern unsigned long		TR_ERROR;			// Número de mensagens não enviadas
 extern unsigned long		TR_WARNING;			// Número de mensagens enviadas após retentativas
+extern unsigned long		TR_FORWARD;			// Número de mensagens encaminhadas
+extern unsigned long		TR_RECIEVED;		// Número de mensagens recebidas
 extern unsigned int			ROUTER_ID;			// ID do roteador definido por argumento --ID=1
 extern short unsigned int	LAST_SENT_DGRAM_ID;	// ID do último datagrama enviado
 extern unsigned int			INTERFACE_DEST;		// Destino definido pelo usuário para envio da mensagem

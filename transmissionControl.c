@@ -94,7 +94,6 @@ static void sendTo(struct sockaddr_in *si_other, Packet p, int s) {
 	void *serial_data;
 	size_t slen = sizeof(*si_other);
 	si_other->sin_port = htons(p->port);
-
 	usleep(INTERFRAME_DELAY);
 
 	if (inet_aton(p->IP , &si_other->sin_addr) == 0) {

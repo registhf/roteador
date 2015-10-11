@@ -75,6 +75,7 @@ static void forwardDatagram(t_arg *arg) {
 	arg->data->TTL--;
 	p = findOutputRoute(arg->G, arg->R, arg->data);
 	p->type = TP_FORWARD;
+	TR_FORWARD++;
 	sendDatagram(p, arg);
 }
 
@@ -86,6 +87,7 @@ static void processDatagram(t_arg *arg) {
 		printf("Mensagem " BOLD "#%d" RESET " do roteador " BOLD "%d" RESET ": " BOLDGREEN, arg->data->ID, arg->data->srcID);
 		printf("%s" RESET "\n", arg->data->message);
 
+		TR_RECIEVED++;
 		sendConfirmation(arg->data->srcID, arg->data->ID, arg);
 	} else if (arg->data->type == TM_CONFIRM)
 		confirmDelivery(arg->data->srcID, arg->data->ID);
