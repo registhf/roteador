@@ -1,5 +1,5 @@
 # Roteador
-Trabalho de Redes
+Trabalho 1 da disciplina de Redes de Computadores - 2015/2
 
 ## Compilando
 Acesse a pasta do código fonte via terminal, execute o ```make```:
