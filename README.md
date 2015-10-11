@@ -28,4 +28,4 @@ Opções para incluir na execução do programa ```--option=<value>``` ou ```-i<
  * ```--timeout | -t```: Tempo máximo de espera (em ms) pela confirmação de recebimento de uma mensagem (Default: 3000 ms)
  * ```--attempts | -r```: Número de reenvios de mensagens não confirmadas (após isso aborta) (Default: 3)
  * ```--ifdelay | -d```: Tempo (em μs) entre o envio de uma mensagem e outra (Default: 175 μs)
- * ```--sleep | -s```: Tempo de espera (em ms) para entre um processamento da fila de transmissão e outro. (Default: 200 ms)
+ * ```--sleep | -s```: Tempo de espera (em ms) entre um processamento da fila de transmissão e outro. (Default: 200 ms)
