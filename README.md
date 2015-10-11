@@ -5,7 +5,7 @@ Trabalho 1 da disciplina de Redes de Computadores - 2015/2
 Acesse a pasta do código fonte via terminal, execute o ```make```:
 ```
 $ make
-gcc *.c -pthread -lncurses -o Router -Wall -g
+gcc *.c -pthread -o Router -Wall -g
 $
 ```
 
